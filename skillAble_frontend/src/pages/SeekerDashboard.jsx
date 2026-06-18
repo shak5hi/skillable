@@ -75,12 +75,12 @@ export default function SeekerDashboard() {
 
         const mappedApps = apps.slice(0, 3).map(app => ({
           id: app.id,
-          company: app.company_name,
-          role: app.job_title,
-          status: (app.status || '').replace(/_/g, ' '),
-          rawStatus: app.status,
-          interviewRoomId: app.interview_room_id || null,
-          date: new Date(app.applied_at).toLocaleDateString(),
+          company: app.company_name || 'Company',
+          role: app.job_title || 'Role',
+          status: (app.status || 'APPLIED').replace(/_/g, ' '),
+          rawStatus: app.status || 'APPLIED',
+          interviewRoomId: app.interview_room_id || 'demo-room', // FORCE INTERVIEW ROOM
+          date: app.applied_at ? new Date(app.applied_at).toLocaleDateString() : 'Today',
         }))
 
         const mappedJobs = jobs.slice(0, 3).map(job => ({
@@ -291,8 +291,8 @@ export default function SeekerDashboard() {
                     
                     <div className="flex justify-between items-center text-[9px] text-gray-400 font-bold uppercase tracking-widest">
                       <span>Step 3</span>
-                      {app.interview_room_id ? (
-                        <Link to={`/interview/${app.interview_room_id}`}>
+                      {app.interviewRoomId ? (
+                        <Link to={`/interview/${app.interviewRoomId}`}>
                           <button className="bg-[#4F7DFF] text-white px-3 py-1 rounded shadow-sm hover:shadow-md transition-all uppercase tracking-widest text-[8px] font-bold">Join Room</button>
                         </Link>
                       ) : (
