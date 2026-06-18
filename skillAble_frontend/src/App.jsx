@@ -86,9 +86,9 @@ function App() {
         <Route path="/signup/seeker"   element={<SignupSeeker />} />
         <Route path="/signup/employer" element={<SignupEmployer />} />
 
-        {/* Public with Navbar */}
+        {/* Public Routes */}
+        <Route path="/" element={<Landing />} />
         <Route element={<Layout />}>
-          <Route path="/"          element={<Landing />} />
           <Route path="/resources" element={<Resources />} />
         </Route>
 
