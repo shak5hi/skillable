@@ -23,7 +23,7 @@ export function DashboardLayout() {
 
   return (
     <div
-      className="flex min-h-screen bg-[#FAFAF8] font-sans"
+      className="flex min-h-screen bg-[#eef2f6] font-sans"
       // Tell screen readers what mode we are in
       aria-label="SkillAble application"
     >
@@ -48,7 +48,7 @@ export function DashboardLayout() {
           </div>
         )}
 
-        <div className="flex-1 overflow-y-auto w-full p-6 sm:p-8 lg:p-12">
+        <div className="flex-1 overflow-y-auto w-full p-4 sm:p-6 lg:p-8">
           <Outlet />
         </div>
       </main>

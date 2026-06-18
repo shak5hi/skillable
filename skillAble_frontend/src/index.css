@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap');
 @import "tailwindcss";
 
 body {
@@ -48,8 +49,7 @@ body {
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-serif);
-    color: var(--color-primary);
+    /* Headers inherit font-family unless explicitly set */
   }
 
   code, pre {
@@ -87,62 +87,4 @@ body {
   }
 }
 
-/* ─────────────────────────────────────────────────────────────────────────────
-   HIGH CONTRAST MODE
-   Applied by toggling class="high-contrast" on <html>.
-   Overrides CSS variables to meet WCAG AAA contrast ratio (≥ 7:1).
-───────────────────────────────────────────────────────────────────────────── */
-html.high-contrast {
-  --color-primary:      #000000;
-  --color-primary-light:#111111;
-  --color-primary-dark: #000000;
-  --color-background:   #ffffff;
-  --color-foreground:   #000000;
-  --color-surface:      #ffffff;
-  --color-surface-hover:#f0f0f0;
-  --color-border:       #000000;
-  --color-accent:       #000000;
-  --color-coral:        #000000;
-}
-
-html.high-contrast body {
-  background-color: #ffffff;
-  color: #000000;
-}
-
-html.high-contrast a {
-  color: #000000;
-  text-decoration: underline;
-  font-weight: bold;
-}
-
-html.high-contrast button,
-html.high-contrast [role="button"] {
-  border: 2px solid #000000 !important;
-}
-
-html.high-contrast input,
-html.high-contrast select,
-html.high-contrast textarea {
-  border: 2px solid #000000 !important;
-  background: #ffffff;
-  color: #000000;
-}
-
-html.high-contrast .bg-gray-800,
-html.high-contrast .bg-gray-900,
-html.high-contrast .bg-gray-950 {
-  background-color: #000000 !important;
-}
-
-html.high-contrast .text-gray-400,
-html.high-contrast .text-gray-500,
-html.high-contrast .text-gray-600 {
-  color: #222222 !important;
-}
-
-/* ── Interview room high-contrast overrides ── */
-html.high-contrast .border-teal-500 { border-color: #000000 !important; }
-html.high-contrast .border-blue-700 { border-color: #000000 !important; }
-html.high-contrast .text-teal-300   { color: #000000 !important; }
-html.high-contrast .text-blue-200   { color: #000000 !important; }
+/* High contrast mode styling handled via Tailwind instead */

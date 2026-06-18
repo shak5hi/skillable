@@ -10,32 +10,36 @@ export function Sidebar({ role = 'JOB_SEEKER' }) {
 
   const seekerLinks = [
     { icon: Home, label: 'Dashboard', path: '/dashboard' },
-    { icon: User, label: 'My Profile', path: '/profile' },
-    { icon: Briefcase, label: 'Browse Jobs', path: '/jobs' },
-    { icon: CheckSquare, label: 'My Applications', path: '/applications' },
-    { icon: FileText, label: 'My Resumes', path: '/resumes' },
-    { icon: Video, label: 'Interview Rooms', path: '/interviews' },
+    { icon: Briefcase, label: 'Search jobs', path: '/jobs' },
+    { icon: FileText, label: 'My jobs', path: '/applications' },
+    { icon: Video, label: 'Interviews', path: '/interviews' },
+    { icon: User, label: 'Profile', path: '/profile' },
+    { icon: CheckSquare, label: 'Resumes', path: '/resumes' },
     { icon: BookOpen, label: 'Resources', path: '/resources' },
-    { icon: Settings, label: 'Accessibility Settings', path: '/accessibility' },
+    { icon: Settings, label: 'Settings', path: '/accessibility' },
   ]
 
   const employerLinks = [
     { icon: Home, label: 'Dashboard', path: '/employer/dashboard' },
     { icon: Briefcase, label: 'Post Job', path: '/employer/jobs/new' },
-    { icon: Briefcase, label: 'My Jobs', path: '/employer/jobs' },
-    { icon: CheckSquare, label: 'Applications Received', path: '/employer/applications' },
-    { icon: Video, label: 'Interview Rooms', path: '/interviews' }, // Shared view theoretically
-    { icon: User, label: 'Company Profile', path: '/employer/profile' },
+    { icon: FileText, label: 'My Jobs', path: '/employer/jobs' },
+    { icon: CheckSquare, label: 'Applications', path: '/employer/applications' },
+    { icon: Video, label: 'Interviews', path: '/interviews' }, 
+    { icon: User, label: 'Profile', path: '/employer/profile' },
   ]
 
   const links = role === 'EMPLOYER' ? employerLinks : seekerLinks
 
   return (
-    <aside className="w-64 bg-white border-r border-[var(--color-border)] h-screen sticky top-0 flex flex-col pt-6 pb-4 shrink-0 overflow-y-auto">
-      <div className="px-8 mb-12">
-        <Link to="/" className="text-[22px] tracking-tight text-[var(--color-primary)] font-bold focus-ring inline-block" style={{ fontFamily: 'var(--font-serif)' }}>
+    <aside className="w-64 bg-[#1e2029] h-screen sticky top-0 flex flex-col pt-8 pb-4 shrink-0 overflow-y-auto font-sans">
+      <div className="px-8 mb-10 flex items-center gap-3">
+        <Link to="/" style={{ fontFamily: 'var(--font-serif)' }} className="text-[26px] font-bold tracking-tight text-white focus-ring inline-block hover:opacity-80 transition-opacity">
           SkillAble.
         </Link>
+      </div>
+
+      <div className="px-8 mb-4">
+        <p className="text-[10px] uppercase font-bold tracking-widest text-gray-500 mb-2">Main Menu</p>
       </div>
 
       <nav className="flex-1 px-4 space-y-2">
@@ -46,26 +50,26 @@ export function Sidebar({ role = 'JOB_SEEKER' }) {
               key={link.path}
               to={link.path}
               className={cn(
-                "flex items-center gap-4 px-8 py-3.5 font-sans transition-all focus-ring text-[13px] uppercase tracking-widest font-bold",
+                "flex items-center gap-4 px-4 py-3 rounded-2xl transition-all focus-ring text-[14px] font-medium",
                 isActive 
-                  ? "border-r-2 border-[#111827] text-[#111827]"
-                  : "text-[#475569] hover:text-[#111827]"
+                  ? "bg-[#4F7DFF] text-white shadow-lg shadow-[#4F7DFF]/30"
+                  : "text-gray-400 hover:text-white hover:bg-white/5"
               )}
               aria-current={isActive ? "page" : undefined}
             >
-              <link.icon className={cn("w-[18px] h-[18px]", isActive ? "text-[#111827]" : "text-[#475569]")} strokeWidth={isActive ? 2.5 : 1.5} />
+              <link.icon className="w-5 h-5" strokeWidth={isActive ? 2 : 1.5} />
               {link.label}
             </Link>
           )
         })}
       </nav>
 
-      <div className="px-8 mt-12 pt-8 border-t border-[var(--color-border)]">
+      <div className="px-8 mt-12 pt-8">
         <button
           onClick={logout}
-          className="w-full flex items-center gap-4 py-2 font-sans text-[12px] uppercase tracking-widest font-bold text-[#475569] hover:text-[#111827] transition-all focus-ring"
+          className="w-full flex items-center gap-4 py-2 font-sans text-[14px] font-medium text-gray-400 hover:text-white transition-all focus-ring"
         >
-          <LogOut className="w-[18px] h-[18px] text-[#475569] group-hover:text-[#111827]" strokeWidth={1.5} />
+          <LogOut className="w-5 h-5" strokeWidth={1.5} />
           Logout
         </button>
       </div>
