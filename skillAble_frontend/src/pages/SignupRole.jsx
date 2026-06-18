@@ -7,37 +7,14 @@ export default function SignupRole() {
   const navigate = useNavigate()
 
   return (
-    <div className="flex min-h-screen bg-[var(--color-surface)]">
-      {/* Left Pane - Branding */}
-      <div className="hidden lg:flex flex-col flex-1 bg-[var(--color-primary)] text-white p-12 justify-between relative overflow-hidden">
-        <div className="absolute -top-32 -left-32 w-96 h-96 bg-[var(--color-primary-light)] rounded-full blur-[100px] opacity-50" />
-        <div className="absolute -bottom-32 -right-32 w-96 h-96 bg-[var(--color-primary-dark)] rounded-full blur-[100px] opacity-50" />
+    <div className="flex min-h-screen bg-[#FAFAF8] text-[#111827] font-sans">
+      
+      {/* Left Pane - Content */}
+      <div className="w-full lg:w-[45%] flex flex-col justify-center px-6 py-12 sm:px-12 xl:px-24 relative z-10">
         
-        <div className="relative z-10 flex items-center gap-3">
-          <Link to="/" className="text-3xl font-serif hover:text-white focus-ring rounded-md">
-            SkillAble
-          </Link>
-        </div>
-        
-        <div className="relative z-10 space-y-6 max-w-lg">
-          <h2 className="text-5xl font-serif leading-tight">
-            Join a platform built on <span className="text-[var(--color-accent)]">dignity and ability.</span>
-          </h2>
-          <p className="text-xl font-sans text-teal-100/90 leading-relaxed">
-            Whether you're bringing your exceptional skills to the table or looking to hire extraordinary talent, your journey starts here.
-          </p>
-        </div>
-        
-        <div className="relative z-10 text-sm text-teal-200">
-          © {new Date().getFullYear()} SkillAble.
-        </div>
-      </div>
-
-      {/* Right Pane - Content */}
-      <div className="flex-1 flex flex-col justify-center px-6 py-12 sm:px-12 lg:px-24 w-full max-w-3xl mx-auto">
-        <div className="lg:hidden mb-12">
-          <Link to="/" className="text-3xl font-serif text-[var(--color-primary)] focus-ring rounded-md">
-            SkillAble
+        <div className="mb-12 mt-4 lg:mt-0 lg:absolute lg:top-12 lg:left-12 xl:left-24">
+          <Link to="/" style={{ fontFamily: 'var(--font-serif)' }} className="text-2xl font-bold tracking-tight text-[#111827]">
+            SkillAble.
           </Link>
         </div>
 
@@ -45,47 +22,68 @@ export default function SignupRole() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="space-y-8"
+          className="w-full max-w-md mx-auto space-y-12"
         >
           <div>
-            <h1 className="text-4xl font-serif text-[var(--color-foreground)]">Create your account</h1>
-            <p className="mt-3 text-lg text-gray-600 font-sans">How would you like to use SkillAble?</p>
+            <div className="flex items-center gap-4 mb-4">
+              <div className="w-8 h-[1px] bg-[#111827]"></div>
+              <span className="text-[#111827] font-bold text-[10px] uppercase tracking-widest">Join Us</span>
+            </div>
+            <h1 className="text-4xl lg:text-5xl font-serif text-[#111827] leading-tight mb-3">Create an account.</h1>
+            <p className="text-sm font-light text-[#475569]">How would you like to use SkillAble?</p>
           </div>
 
-          <div className="grid sm:grid-cols-2 gap-6">
+          <div className="space-y-4">
             <button
               onClick={() => navigate('/signup/seeker')}
-              className="flex flex-col items-center p-8 border-2 border-[var(--color-border)] rounded-2xl hover:border-[var(--color-primary)] hover:bg-[var(--color-surface-hover)] focus-ring transition-all group group-hover:shadow-md text-center text-left"
-              aria-label="Sign up as a Job Seeker"
+              className="w-full flex items-center p-6 border border-[#E5E7EB] bg-white hover:border-[#111827] transition-all group text-left rounded-[24px] shadow-sm"
             >
-              <div className="w-16 h-16 rounded-full bg-teal-50 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                <UserPlus className="w-8 h-8 text-[var(--color-primary)]" />
+              <div className="w-12 h-12 bg-[#FAFAF8] rounded-full border border-[#E5E7EB] flex items-center justify-center mr-6 group-hover:bg-[#111827] group-hover:border-[#111827] transition-colors">
+                <UserPlus className="w-5 h-5 text-[#111827] group-hover:text-white transition-colors" />
               </div>
-              <h3 className="text-xl font-serif font-bold text-gray-900 group-hover:text-[var(--color-primary)] transition-colors">I'm looking for a job</h3>
-              <p className="text-sm font-sans text-gray-500 mt-2">Create your accessible profile and find inclusive opportunities.</p>
+              <div>
+                <h3 className="text-[13px] font-bold uppercase tracking-widest text-[#111827] mb-1">I'm looking for a job</h3>
+                <p className="text-[12px] font-light text-[#475569]">Create your accessible profile.</p>
+              </div>
             </button>
 
             <button
               onClick={() => navigate('/signup/employer')}
-              className="flex flex-col items-center p-8 border-2 border-[var(--color-border)] rounded-2xl hover:border-[var(--color-accent)] hover:bg-[#fffbf0] focus-ring transition-all group group-hover:shadow-md text-center text-left"
-              aria-label="Sign up as an Employer"
+              className="w-full flex items-center p-6 border border-[#E5E7EB] bg-white hover:border-[#111827] transition-all group text-left rounded-[24px] shadow-sm"
             >
-              <div className="w-16 h-16 rounded-full bg-amber-50 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                <Briefcase className="w-8 h-8 text-[var(--color-accent)]" />
+              <div className="w-12 h-12 bg-[#FAFAF8] rounded-full border border-[#E5E7EB] flex items-center justify-center mr-6 group-hover:bg-[#111827] group-hover:border-[#111827] transition-colors">
+                <Briefcase className="w-5 h-5 text-[#111827] group-hover:text-white transition-colors" />
               </div>
-              <h3 className="text-xl font-serif font-bold text-gray-900 group-hover:text-[var(--color-accent)] transition-colors">I'm hiring</h3>
-              <p className="text-sm font-sans text-gray-500 mt-2">Post jobs and connect with a diverse, talented workforce.</p>
+              <div>
+                <h3 className="text-[13px] font-bold uppercase tracking-widest text-[#111827] mb-1">I'm hiring</h3>
+                <p className="text-[12px] font-light text-[#475569]">Connect with extraordinary talent.</p>
+              </div>
             </button>
           </div>
 
-          <p className="text-center font-sans text-gray-600">
+          <p className="text-[13px] font-light text-[#475569] pt-8 border-t border-[#E5E7EB]">
             Already have an account?{' '}
-            <Link to="/login" className="font-semibold text-[var(--color-primary)] hover:underline focus-ring rounded-sm">
+            <Link to="/login" className="font-semibold text-[#111827] border-b border-[#111827] pb-0.5 hover:opacity-50 transition-opacity">
               Log in
             </Link>
           </p>
         </motion.div>
       </div>
+
+      {/* Right Pane - Vibrant Editorial Image */}
+      <div className="hidden lg:flex lg:w-[55%] relative h-screen bg-[#F3F4F6] border-l border-[#E5E7EB] items-center justify-center overflow-hidden">
+        <img 
+          src="https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&q=80&w=1200" 
+          alt="Minimalist architecture" 
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+        <div className="absolute bottom-12 right-12 text-white text-right z-10">
+           <p className="font-serif text-3xl font-bold leading-tight mb-2">"True inclusion starts with design."</p>
+           <p className="text-white/90 text-[11px] uppercase tracking-widest font-bold">SkillAble Platform</p>
+        </div>
+      </div>
+      
     </div>
   )
 }

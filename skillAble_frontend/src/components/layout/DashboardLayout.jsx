@@ -23,7 +23,7 @@ export function DashboardLayout() {
 
   return (
     <div
-      className="flex min-h-screen bg-[var(--color-surface)] font-sans"
+      className="flex min-h-screen bg-[#FAFAF8] font-sans"
       // Tell screen readers what mode we are in
       aria-label="SkillAble application"
     >

@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { FileText, Briefcase, Video, TrendingUp, Volume2 } from 'lucide-react'
+import { FileText, Briefcase, Video, TrendingUp, Volume2, ArrowRight } from 'lucide-react'
 import { useAuthStore, isBlindUser, isDeafUser } from '../store/authStore'
-import { Badge }  from '../components/common/Badge'
-import { Button } from '../components/common/Button'
+import { SectionDivider } from '../components/common/SectionDivider'
 import api from '../api/axios'
 
 export default function SeekerDashboard() {
@@ -53,8 +52,6 @@ export default function SeekerDashboard() {
           company: app.company_name,
           role: app.job_title,
           status: (app.status || '').replace(/_/g, ' '),
-          badge: app.status === 'INTERVIEW_SCHEDULED' ? 'primary'
-               : app.status === 'UNDER_REVIEW' ? 'warning' : 'secondary',
           rawStatus: app.status,
           interviewRoomId: app.interview_room_id || null,
           date: new Date(app.applied_at).toLocaleDateString(),
@@ -67,7 +64,6 @@ export default function SeekerDashboard() {
           match: job.match_score || 85,
         })))
 
-        // Read dashboard summary aloud for blind users
         if (blind) {
           const firstName = user?.full_name?.split(' ')[0] || 'there'
           speak(
@@ -90,7 +86,6 @@ export default function SeekerDashboard() {
     fetchDashboardData()
   }, []) // eslint-disable-line
 
-  // ── Voice event: "join interview" → navigate to most recent interview room ──
   useEffect(() => {
     const handleVoiceNav = (e) => {
       const route = e.detail?.route || ''
@@ -116,37 +111,41 @@ export default function SeekerDashboard() {
   const strokeDashoffset = circumference - (circumference * resumeScore) / 100
 
   const stats = [
-    { label: 'Applications Sent',    value: statsData.sent,       icon: Briefcase, color: 'text-blue-600',   bg: 'bg-blue-50' },
-    { label: 'Under Review',         value: statsData.review,     icon: FileText,  color: 'text-amber-600',  bg: 'bg-amber-50' },
-    { label: 'Interviews Scheduled', value: statsData.interviews, icon: Video,     color: 'text-purple-600', bg: 'bg-purple-50' },
-    { label: 'Jobs Matched',         value: statsData.matched,    icon: TrendingUp,color: 'text-green-600',  bg: 'bg-green-50' },
+    { label: 'Applications Sent',    value: statsData.sent,       icon: Briefcase },
+    { label: 'Under Review',         value: statsData.review,     icon: FileText },
+    { label: 'Interviews Scheduled', value: statsData.interviews, icon: Video },
+    { label: 'Jobs Matched',         value: statsData.matched,    icon: TrendingUp },
   ]
 
   return (
-    <div className="space-y-10" id="main-content">
+    <div className="space-y-12 pb-24" id="main-content">
 
       {/* ── Header ── */}
-      <div className="flex items-start justify-between gap-4 flex-wrap">
+      <div className="flex items-start justify-between gap-4 flex-wrap mt-8">
         <div>
-          <h1 className="text-3xl font-serif font-bold text-gray-900">
-            Welcome back, {firstName} 👋
+          <div className="flex items-center gap-4 mb-4">
+            <div className="w-8 h-[1px] bg-[#111827]"></div>
+            <span className="text-[#111827] font-bold text-[10px] uppercase tracking-widest">Dashboard</span>
+          </div>
+          <h1 className="text-4xl lg:text-5xl font-serif font-bold text-[#111827] mb-2 tracking-tight">
+            Welcome back, {firstName}.
           </h1>
-          <p className="text-gray-600 font-sans mt-2">
+          <p className="text-[#475569] font-light text-[14px]">
             Here's your activity summary.
             {blind && ' Say "read aloud" to hear full details.'}
           </p>
 
           {/* Accessibility status bar */}
           {(blind || deaf) && (
-            <div className="flex flex-wrap gap-2 mt-3">
+            <div className="flex flex-wrap gap-3 mt-6">
               {blind && (
-                <span className="text-xs bg-blue-50 text-blue-700 border border-blue-200 px-3 py-1 rounded-full font-sans flex items-center gap-1.5">
-                  <Volume2 className="w-3 h-3" /> Voice Navigation Active — say "Hello Bandhu"
+                <span className="text-[10px] font-bold uppercase tracking-widest border border-[#111827] text-[#111827] bg-[#FAFAF8] px-4 py-2 flex items-center gap-2 rounded-full">
+                  <Volume2 className="w-3.5 h-3.5" /> Voice Navigation Active
                 </span>
               )}
               {deaf && (
-                <span className="text-xs bg-teal-50 text-teal-700 border border-teal-200 px-3 py-1 rounded-full font-sans">
-                  🤟 Sign language support active in interviews
+                <span className="text-[10px] font-bold uppercase tracking-widest border border-[#111827] text-[#111827] bg-[#FAFAF8] px-4 py-2 flex items-center gap-2 rounded-full">
+                  🤟 Sign language support active
                 </span>
               )}
             </div>
@@ -161,13 +160,15 @@ export default function SeekerDashboard() {
               `Interviews scheduled: ${statsData.interviews}. ` +
               `Jobs matched: ${statsData.matched}.`
             )}
-            className="flex items-center gap-2 text-sm text-teal-600 font-sans font-medium border border-teal-200 bg-teal-50 px-4 py-2 rounded-xl hover:bg-teal-100 transition-colors focus-ring"
+            className="flex items-center gap-2 border border-[#111827] bg-[#111827] text-white px-5 py-2.5 rounded-full text-[10px] uppercase tracking-widest font-bold hover:bg-[#475569] transition-colors focus-ring"
             aria-label="Read dashboard summary aloud"
           >
             <Volume2 className="w-4 h-4" /> Read Summary
           </button>
         )}
       </div>
+
+      <SectionDivider number="01" title="Overview" />
 
       {/* ── Stats grid ── */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4" role="list" aria-label="Application statistics">
@@ -178,146 +179,158 @@ export default function SeekerDashboard() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.08 }}
-            className="bg-white rounded-2xl p-6 border border-[var(--color-border)] shadow-sm flex items-center gap-5"
+            className="bg-white rounded-[24px] p-6 border border-[#E5E7EB] shadow-sm flex flex-col items-start gap-4 hover:border-[#111827] transition-all group"
             aria-label={`${stat.label}: ${isLoading ? 'loading' : stat.value}`}
           >
-            <div className={`p-4 rounded-full ${stat.bg} ${stat.color}`} aria-hidden="true">
-              <stat.icon className="w-6 h-6" />
+            <div className="p-3 border border-[#E5E7EB] bg-[#FAFAF8] rounded-full group-hover:bg-[#111827] group-hover:border-[#111827] transition-colors" aria-hidden="true">
+              <stat.icon className="w-5 h-5 text-[#111827] group-hover:text-white transition-colors" />
             </div>
             <div>
-              <p className="text-3xl font-serif font-bold text-gray-900">
+              <p className="text-4xl font-serif font-bold text-[#111827]">
                 {isLoading ? '–' : stat.value}
               </p>
-              <p className="text-sm font-sans font-medium text-gray-500 mt-1">{stat.label}</p>
+              <p className="text-[11px] font-bold uppercase tracking-widest text-[#475569] mt-2">{stat.label}</p>
             </div>
           </motion.div>
         ))}
       </div>
 
-      {/* ── Body ── */}
-      <div className="grid lg:grid-cols-3 gap-8">
+      <div className="grid lg:grid-cols-3 gap-8 pt-8">
 
         {/* Recent applications */}
         <div className="lg:col-span-2 space-y-6">
-          <div className="flex justify-between items-center">
-            <h2 className="text-2xl font-serif font-bold text-gray-900">Recent Applications</h2>
-            <Link to="/applications">
-              <Button variant="ghost" size="sm">View All</Button>
-            </Link>
-          </div>
+          <SectionDivider number="02" title="Recent Activity" align="left" />
 
-          <div className="bg-white rounded-[2rem] border border-[var(--color-border)] shadow-sm overflow-hidden min-h-[150px]">
+          <div className="bg-white rounded-[24px] border border-[#E5E7EB] shadow-sm overflow-hidden min-h-[150px]">
             {isLoading ? (
-              <div className="p-8 text-center text-gray-500 font-sans" aria-busy="true">Loading applications…</div>
+              <div className="p-8 text-center text-[#475569] font-light text-[13px]" aria-busy="true">Loading applications…</div>
             ) : recentApps.length === 0 ? (
-              <div className="p-8 text-center text-gray-500 font-sans">
+              <div className="p-12 text-center text-[#475569] font-light text-[14px]">
                 You haven't applied to any jobs yet.{' '}
-                <Link to="/jobs" className="text-teal-600 underline">Browse jobs</Link>
+                <Link to="/jobs" className="text-[#111827] font-semibold border-b border-[#111827] pb-0.5 hover:opacity-50 transition-opacity">Browse jobs</Link>
               </div>
             ) : (
               recentApps.map((app, index) => (
                 <div
                   key={app.id}
-                  className={`p-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 hover:bg-gray-50 transition-colors ${
-                    index !== recentApps.length - 1 ? 'border-b border-[var(--color-border)]' : ''
+                  className={`p-6 sm:p-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 hover:bg-[#FAFAF8] transition-colors ${
+                    index !== recentApps.length - 1 ? 'border-b border-[#E5E7EB]' : ''
                   }`}
                   aria-label={`${app.role} at ${app.company} — ${app.status}`}
                 >
                   <div>
-                    <h3 className="text-lg font-serif font-bold text-gray-900">{app.role || 'Unknown Job'}</h3>
-                    <div className="flex gap-2 items-center text-sm font-sans text-gray-600 mt-1 flex-wrap">
-                      <span className="font-medium">{app.company || 'Unknown Company'}</span>
-                      <span>•</span>
+                    <h3 className="text-[16px] font-serif font-bold text-[#111827] mb-1">{app.role || 'Unknown Job'}</h3>
+                    <div className="flex gap-2 items-center text-[11px] uppercase tracking-widest font-bold text-[#475569] flex-wrap">
+                      <span>{app.company || 'Unknown Company'}</span>
+                      <span className="text-[#E5E7EB]">•</span>
                       <span>Applied {app.date}</span>
                     </div>
                   </div>
-                  <div className="flex items-center gap-4 w-full sm:w-auto mt-2 sm:mt-0 justify-between">
-                    <Badge variant={app.badge} className="capitalize">{app.status}</Badge>
+                  <div className="flex items-center gap-4 w-full sm:w-auto mt-4 sm:mt-0 justify-between">
+                    <span className="text-[10px] font-bold uppercase tracking-widest border border-[#E5E7EB] bg-white text-[#111827] px-3 py-1.5 rounded-full">
+                      {app.status}
+                    </span>
                     {app.rawStatus === 'INTERVIEW_SCHEDULED' && app.interviewRoomId && (
                       <Link to={`/interview/${app.interviewRoomId}`}>
-                        <Button size="sm" variant="accent" className="font-bold">
+                        <button className="flex items-center gap-2 border border-[#111827] bg-[#111827] text-white px-4 py-2 rounded-full text-[10px] uppercase tracking-widest font-bold hover:bg-[#475569] hover:border-[#475569] transition-colors">
+                          <Video className="w-3.5 h-3.5" />
                           {deaf ? '🤟 Join Room' : 'Join Room'}
-                        </Button>
+                        </button>
                       </Link>
                     )}
                   </div>
                 </div>
               ))
             )}
+            
+            {recentApps.length > 0 && (
+              <div className="p-4 border-t border-[#E5E7EB] bg-[#FAFAF8] flex justify-center">
+                <Link to="/applications" className="text-[11px] font-bold uppercase tracking-widest text-[#111827] flex items-center gap-2 hover:opacity-50 transition-opacity">
+                  View All Activity <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+              </div>
+            )}
           </div>
         </div>
 
         {/* Sidebar */}
         <div className="space-y-8">
+          <SectionDivider number="03" title="Profile Match" align="left" />
 
           {/* Resume score */}
-          <div className="bg-white p-8 rounded-[2rem] border border-[var(--color-border)] shadow-sm flex flex-col items-center text-center"
+          <div className="bg-white p-8 rounded-[24px] border border-[#E5E7EB] shadow-sm flex flex-col items-center text-center group hover:border-[#111827] transition-all"
             aria-label={`Resume strength score: ${resumeData ? resumeScore + ' out of 100' : 'not uploaded'}`}
           >
-            <h2 className="text-xl font-serif font-bold text-gray-900 mb-6 w-full text-left">Resume Strength</h2>
-            <div className="relative w-32 h-32 flex items-center justify-center" aria-hidden="true">
+            <div className="w-full flex justify-between items-center mb-8">
+               <h2 className="text-[13px] font-bold uppercase tracking-widest text-[#111827]">Resume Strength</h2>
+               <FileText className="w-4 h-4 text-[#475569]" />
+            </div>
+            
+            <div className="relative w-40 h-40 flex items-center justify-center" aria-hidden="true">
               <svg className="w-full h-full transform -rotate-90">
-                <circle cx="64" cy="64" r="56" fill="transparent" stroke="var(--color-border)" strokeWidth="12" />
+                <circle cx="80" cy="80" r="70" fill="transparent" stroke="#E5E7EB" strokeWidth="8" />
                 <circle
-                  cx="64" cy="64" r="56"
+                  cx="80" cy="80" r="70"
                   fill="transparent"
-                  stroke={resumeData ? 'var(--color-primary)' : 'var(--color-border)'}
-                  strokeWidth="12"
-                  strokeDasharray={strokeDasharray}
-                  strokeDashoffset={strokeDashoffset}
+                  stroke={resumeData ? '#111827' : '#E5E7EB'}
+                  strokeWidth="8"
+                  strokeDasharray={Math.PI * 2 * 70}
+                  strokeDashoffset={(Math.PI * 2 * 70) - ((Math.PI * 2 * 70) * resumeScore) / 100}
                   className="transition-all duration-1000 ease-out"
                 />
               </svg>
               <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <span className="text-3xl font-serif font-bold text-[var(--color-primary)]">
-                  {resumeData ? resumeScore : 'N/A'}
+                <span className="text-5xl font-serif font-bold text-[#111827]">
+                  {resumeData ? resumeScore : '–'}
                 </span>
-                {resumeData && <span className="text-xs text-gray-500 font-sans">/ 100</span>}
+                {resumeData && <span className="text-[10px] font-bold uppercase tracking-widest text-[#475569] mt-1">out of 100</span>}
               </div>
             </div>
-            <p className="mt-6 mb-4 text-sm font-sans text-gray-600">
+            <p className="mt-8 mb-6 text-[12px] font-light text-[#475569] leading-relaxed">
               {resumeData
-                ? 'Your resume is strong. Adding more relevant skills could improve your match rate.'
-                : "You haven't uploaded a resume yet."}
+                ? 'Your profile is strong. Adding more skills could improve your match rate further.'
+                : "Upload a resume to unlock personalized job recommendations."}
             </p>
             <Link to="/resumes" className="w-full">
-              <Button variant="outline" className="w-full">
+              <button className="w-full border border-[#E5E7EB] bg-[#FAFAF8] text-[#111827] py-3.5 text-[11px] uppercase tracking-widest font-bold hover:border-[#111827] hover:bg-white transition-colors rounded-full shadow-sm">
                 {resumeData ? 'Improve Resume' : 'Upload Resume'}
-              </Button>
+              </button>
             </Link>
           </div>
 
           {/* Recommended jobs */}
-          <div className="bg-white rounded-[2rem] border border-[var(--color-border)] shadow-sm p-6">
-            <h2 className="text-xl font-serif font-bold text-gray-900 mb-4">Recommended Jobs</h2>
-            <div className="space-y-4 min-h-[100px]">
+          <div className="bg-white rounded-[24px] border border-[#E5E7EB] shadow-sm overflow-hidden">
+            <div className="p-6 border-b border-[#E5E7EB] bg-[#FAFAF8] flex justify-between items-center">
+              <h2 className="text-[13px] font-bold uppercase tracking-widest text-[#111827]">Recommended Roles</h2>
+              <TrendingUp className="w-4 h-4 text-[#475569]" />
+            </div>
+            
+            <div className="min-h-[100px]">
               {isLoading ? (
-                <p className="text-center text-gray-500 py-4 font-sans" aria-busy="true">Loading…</p>
+                <p className="text-center text-[#475569] font-light text-[12px] py-8" aria-busy="true">Loading…</p>
               ) : recommendedJobs.length === 0 ? (
-                <p className="text-center text-gray-500 py-4 font-sans">No jobs matched yet.</p>
+                <p className="text-center text-[#475569] font-light text-[12px] py-8">No roles matched yet.</p>
               ) : (
-                recommendedJobs.map(job => (
-                  <div
-                    key={job.id}
-                    className="p-4 rounded-xl border border-[var(--color-border)] hover:border-[var(--color-primary)]/50 transition-colors group"
-                    aria-label={`${job.title} at ${job.company}, ${job.match}% match`}
-                  >
-                    <div className="flex justify-between items-start mb-2">
-                      <h3 className="font-serif font-bold text-gray-900 group-hover:text-[var(--color-primary)] transition-colors text-sm">
-                        {job.title}
-                      </h3>
-                      <Badge variant="success" className="bg-green-100 text-green-800 text-[10px] px-2 shrink-0">
-                        {job.match}% Match
-                      </Badge>
+                <div className="divide-y divide-[#E5E7EB]">
+                  {recommendedJobs.map(job => (
+                    <div
+                      key={job.id}
+                      className="p-6 hover:bg-[#FAFAF8] transition-colors group cursor-pointer"
+                      onClick={() => navigate(`/jobs/${job.id}`)}
+                      aria-label={`${job.title} at ${job.company}, ${job.match}% match`}
+                    >
+                      <div className="flex justify-between items-start mb-2">
+                        <h3 className="font-serif font-bold text-[#111827] text-[15px] group-hover:text-[#475569] transition-colors">
+                          {job.title}
+                        </h3>
+                        <span className="text-[9px] font-bold uppercase tracking-widest border border-[#111827] text-[#111827] px-2 py-1 rounded-full shrink-0">
+                          {job.match}% Match
+                        </span>
+                      </div>
+                      <p className="text-[11px] font-bold uppercase tracking-widest text-[#475569]">{job.company}</p>
                     </div>
-                    <p className="text-sm font-sans text-gray-500 mb-3">{job.company}</p>
-                    <Link to={`/jobs/${job.id}`}>
-                      <Button size="sm" variant="ghost" className="w-full justify-center bg-gray-50 border border-gray-100 hover:bg-[var(--color-surface-hover)]">
-                        View Job
-                      </Button>
-                    </Link>
-                  </div>
-                ))
+                  ))}
+                </div>
               )}
             </div>
           </div>

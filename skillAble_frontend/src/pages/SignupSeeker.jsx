@@ -188,51 +188,44 @@ export default function SignupSeeker() {
   ]
 
   return (
-    <div className="flex min-h-screen bg-[var(--color-surface)]">
+    <div className="flex min-h-screen bg-[#FAFAF8] text-[#111827] font-sans">
 
-      {/* ── Left branding pane ── */}
-      <div className="hidden lg:flex flex-col flex-1 bg-[var(--color-primary)] text-white p-12 justify-between relative overflow-hidden">
-        <div className="absolute top-1/4 -left-20 w-80 h-80 bg-teal-400 rounded-full blur-[100px] opacity-30" />
-        <div className="absolute bottom-1/4 right-0 w-96 h-96 bg-[var(--color-accent)] rounded-full blur-[120px] opacity-20" />
-        <Link to="/" className="text-4xl font-serif focus-ring rounded-md relative z-10">SkillAble</Link>
-        <div className="relative z-10 space-y-8 max-w-lg">
-          <blockquote className="text-4xl font-serif leading-tight">
-            "Your profile highlights exactly what you can do, and handles what you need to do it."
-          </blockquote>
-          <div className="flex gap-3 text-teal-100/80 items-center bg-white/10 p-4 rounded-xl border border-white/20 backdrop-blur-sm shadow-xl">
-            <ShieldCheck className="w-8 h-8 text-[var(--color-accent)] shrink-0" />
-            <p className="font-sans text-sm">Your data is strictly confidential and shared only with verified inclusive employers.</p>
-          </div>
+      {/* ── Left form pane ── */}
+      <div className="w-full lg:w-[45%] flex flex-col px-6 py-12 sm:px-12 xl:px-24 relative z-10 overflow-y-auto">
+        
+        <div className="mb-12 mt-4 lg:mt-0">
+          <Link to="/" style={{ fontFamily: 'var(--font-serif)' }} className="text-2xl font-bold tracking-tight text-[#111827]">
+            SkillAble.
+          </Link>
         </div>
-      </div>
-
-      {/* ── Right form pane ── */}
-      <div className="flex-1 flex flex-col justify-center px-6 py-12 sm:px-12 lg:px-24 max-w-3xl mx-auto w-full overflow-y-auto">
 
         {/* Progress */}
-        <div className="mb-10">
-          <Link to="/" className="text-2xl font-serif text-[var(--color-primary)] lg:hidden mb-8 block">SkillAble</Link>
-          <div className="flex items-center gap-3 mb-3">
+        <div className="mb-10 max-w-md mx-auto w-full">
+          <div className="flex items-center gap-4 mb-6">
+            <div className="w-8 h-[1px] bg-[#111827]"></div>
+            <span className="text-[#111827] font-bold text-[10px] uppercase tracking-widest">Step {step} of 3</span>
+          </div>
+          
+          <div className="flex items-center gap-3 mb-8">
             {[1, 2, 3].map(n => (
               <React.Fragment key={n}>
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold font-sans transition-all ${
-                  step > n ? 'bg-[var(--color-primary)] text-white' :
-                  step === n ? 'bg-[var(--color-primary)] text-white ring-4 ring-[var(--color-primary)]/30' :
-                  'bg-gray-200 text-gray-500'
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-[11px] font-bold transition-all ${
+                  step > n ? 'bg-[#111827] text-white' :
+                  step === n ? 'bg-[#111827] text-white ring-4 ring-[#111827]/10' :
+                  'bg-white border border-[#E5E7EB] text-[#475569]'
                 }`} aria-current={step === n ? 'step' : undefined}>
                   {step > n ? <CheckCircle className="w-4 h-4" /> : n}
                 </div>
-                {n < 3 && <div className={`flex-1 h-1 rounded-full transition-all ${step > n ? 'bg-[var(--color-primary)]' : 'bg-gray-200'}`} />}
+                {n < 3 && <div className={`flex-1 h-[1px] transition-all ${step > n ? 'bg-[#111827]' : 'bg-[#E5E7EB]'}`} />}
               </React.Fragment>
             ))}
           </div>
-          <h1 className="text-2xl font-serif font-bold text-gray-900">{stepTitles[step - 1]}</h1>
-          <p className="text-sm text-gray-500 font-sans mt-1">Step {step} of 3</p>
+          <h1 className="text-3xl lg:text-4xl font-serif font-bold text-[#111827]">{stepTitles[step - 1]}</h1>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-8" noValidate>
+        <form onSubmit={handleSubmit} className="space-y-8 max-w-md mx-auto w-full" noValidate>
           {error && (
-            <div className="p-4 bg-red-50 text-red-800 rounded-xl border border-red-200 text-sm font-medium" role="alert" aria-live="polite">
+            <div className="p-4 bg-red-50 text-red-800 border border-red-200 text-[13px] font-medium" role="alert" aria-live="polite">
               {error}
             </div>
           )}
@@ -242,64 +235,82 @@ export default function SignupSeeker() {
             {/* ── Step 1: Account details ── */}
             {step === 1 && (
               <motion.div key="step1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-5">
-                <Input label="Full Name" name="fullName" value={formData.fullName} onChange={handleChange} required placeholder="As on Aadhaar card" autoComplete="name" />
-                <Input label="Email Address" name="email" type="email" value={formData.email} onChange={handleChange} required placeholder="you@example.com" autoComplete="email" />
-                <Input label="Password" name="password" type="password" value={formData.password} onChange={handleChange} required placeholder="Min. 8 characters" autoComplete="new-password" />
-                <Input label="Confirm Password" name="confirmPassword" type="password" value={formData.confirmPassword} onChange={handleChange} required placeholder="Repeat your password" autoComplete="new-password" />
+                <div>
+                  <label className="block text-[10px] font-bold uppercase tracking-widest text-[#111827] mb-2 ml-4">Full Name</label>
+                  <input name="fullName" value={formData.fullName} onChange={handleChange} required placeholder="As on Aadhaar card" className="w-full bg-white border border-[#E5E7EB] px-6 py-4 text-[14px] focus:outline-none focus:border-[#111827] rounded-full shadow-sm" />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-bold uppercase tracking-widest text-[#111827] mb-2 ml-4">Email Address</label>
+                  <input name="email" type="email" value={formData.email} onChange={handleChange} required placeholder="you@example.com" className="w-full bg-white border border-[#E5E7EB] px-6 py-4 text-[14px] focus:outline-none focus:border-[#111827] rounded-full shadow-sm" />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-bold uppercase tracking-widest text-[#111827] mb-2 ml-4">Password</label>
+                  <input name="password" type="password" value={formData.password} onChange={handleChange} required placeholder="Min. 8 characters" className="w-full bg-white border border-[#E5E7EB] px-6 py-4 text-[14px] focus:outline-none focus:border-[#111827] rounded-full shadow-sm" />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-bold uppercase tracking-widest text-[#111827] mb-2 ml-4">Confirm Password</label>
+                  <input name="confirmPassword" type="password" value={formData.confirmPassword} onChange={handleChange} required placeholder="Repeat your password" className="w-full bg-white border border-[#E5E7EB] px-6 py-4 text-[14px] focus:outline-none focus:border-[#111827] rounded-full shadow-sm" />
+                </div>
               </motion.div>
             )}
 
             {/* ── Step 2: Identity verification ── */}
             {step === 2 && (
-              <motion.div key="step2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6">
+              <motion.div key="step2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-8">
                 <fieldset>
-                  <legend className="text-base font-sans font-semibold text-gray-900 mb-4">Disability Type</legend>
-                  <div className="grid sm:grid-cols-3 gap-4">
+                  <legend className="text-[11px] uppercase tracking-widest font-bold text-[#111827] mb-4">Disability Type</legend>
+                  <div className="flex flex-col gap-3">
                     {disabilityOptions.map(opt => (
                       <label
                         key={opt.id}
-                        className={`relative cursor-pointer border-2 rounded-xl p-4 flex flex-col items-center gap-3 text-center transition-all focus-within:ring-4 focus-within:ring-[var(--color-primary)]/40 ${
+                        className={`relative cursor-pointer border px-5 py-4 flex items-center gap-4 transition-all rounded-[20px] ${
                           formData.disabilityType === opt.id
-                            ? 'border-[var(--color-primary)] bg-teal-50'
-                            : 'border-[var(--color-border)] hover:bg-gray-50'
+                            ? 'border-[#111827] bg-white shadow-md'
+                            : 'border-[#E5E7EB] bg-transparent hover:border-[#111827]'
                         }`}
                       >
                         <input type="radio" name="disabilityType" value={opt.id} checked={formData.disabilityType === opt.id} onChange={handleChange} className="sr-only" />
-                        <div className={`p-3 rounded-full ${formData.disabilityType === opt.id ? 'bg-[var(--color-primary)] text-white' : 'bg-gray-100 text-gray-500'}`}>
-                          <opt.icon className="w-6 h-6" />
+                        <div className={`p-2.5 rounded-full border ${formData.disabilityType === opt.id ? 'bg-[#111827] text-white border-[#111827]' : 'bg-[#FAFAF8] text-[#111827] border-[#E5E7EB]'}`}>
+                          <opt.icon className="w-5 h-5" strokeWidth={1.5} />
                         </div>
-                        <span className={`font-sans font-medium text-sm ${formData.disabilityType === opt.id ? 'text-[var(--color-primary)]' : 'text-gray-700'}`}>{opt.label}</span>
-                        <span className="text-xs text-gray-500 font-sans leading-tight">{opt.desc}</span>
+                        <div className="flex flex-col">
+                          <span className={`font-bold text-[12px] uppercase tracking-wider mb-1 ${formData.disabilityType === opt.id ? 'text-[#111827]' : 'text-[#475569]'}`}>{opt.label}</span>
+                          <span className="text-[11px] text-[#475569] font-light leading-snug">{opt.desc}</span>
+                        </div>
                       </label>
                     ))}
                   </div>
                 </fieldset>
 
-                <div className="grid sm:grid-cols-2 gap-5 pt-4 border-t border-[var(--color-border)]">
-                  <div className="space-y-1">
-                    <Input label="Aadhaar Number (12 digits)" name="aadhaarNumber" value={formData.aadhaarNumber} onChange={handleChange} required maxLength={12} placeholder="0000 0000 0000" />
-                    <p className="text-xs text-gray-500 flex items-center gap-1.5 font-sans">
-                      <Lock className="w-3.5 h-3.5 text-gray-400" /> Stored as SHA-256 hash — never in plain text.
+                <div className="space-y-5 pt-6 border-t border-[#E5E7EB]">
+                  <div>
+                    <label className="block text-[10px] font-bold uppercase tracking-widest text-[#111827] mb-2 ml-4">Aadhaar Number (12 digits)</label>
+                    <input name="aadhaarNumber" value={formData.aadhaarNumber} onChange={handleChange} required maxLength={12} placeholder="0000 0000 0000" className="w-full bg-white border border-[#E5E7EB] px-6 py-4 text-[14px] focus:outline-none focus:border-[#111827] rounded-full shadow-sm mb-1" />
+                    <p className="text-[10px] text-[#475569] flex items-center gap-1.5 uppercase tracking-wide ml-4">
+                      <Lock className="w-3 h-3 text-[#475569]" /> Stored as SHA-256 hash
                     </p>
                   </div>
-                  <Input label="PWD Certificate ID" name="pwdCertificateId" value={formData.pwdCertificateId} onChange={handleChange} required placeholder="E.g. UP/0000000" />
+                  <div>
+                    <label className="block text-[10px] font-bold uppercase tracking-widest text-[#111827] mb-2 ml-4">PWD Certificate ID</label>
+                    <input name="pwdCertificateId" value={formData.pwdCertificateId} onChange={handleChange} required placeholder="E.g. UP/0000000" className="w-full bg-white border border-[#E5E7EB] px-6 py-4 text-[14px] focus:outline-none focus:border-[#111827] rounded-full shadow-sm" />
+                  </div>
                 </div>
               </motion.div>
             )}
 
             {/* ── Step 3: Accessibility preferences ── */}
             {step === 3 && (
-              <motion.div key="step3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-5">
-                <p className="text-sm text-gray-600 font-sans leading-relaxed">
+              <motion.div key="step3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6">
+                <p className="text-[13px] text-[#475569] font-light leading-relaxed">
                   Based on your disability type (<strong>{formData.disabilityType}</strong>), we've pre-selected the most relevant accessibility features. You can change these at any time in Settings.
                 </p>
 
                 <div className="space-y-3">
                   {prefOptions.map(pref => (
-                    <label key={pref.id} className="flex items-start justify-between gap-4 p-4 rounded-2xl border border-[var(--color-border)] hover:bg-gray-50 cursor-pointer transition-colors">
+                    <label key={pref.id} className="flex items-start justify-between gap-4 p-5 border border-[#E5E7EB] bg-white hover:border-[#111827] cursor-pointer transition-colors rounded-[20px] shadow-sm">
                       <div>
-                        <p className="font-sans font-semibold text-gray-900">{pref.title}</p>
-                        <p className="text-sm text-gray-500 font-sans mt-0.5">{pref.desc}</p>
+                        <p className="font-bold text-[12px] uppercase tracking-wider text-[#111827] mb-1">{pref.title}</p>
+                        <p className="text-[11px] text-[#475569] font-light">{pref.desc}</p>
                       </div>
                       <div className="relative inline-flex items-center cursor-pointer shrink-0 mt-0.5">
                         <input
@@ -310,19 +321,19 @@ export default function SignupSeeker() {
                           className="sr-only peer"
                           aria-label={`Toggle ${pref.title}`}
                         />
-                        <div className="w-14 h-7 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[var(--color-primary)]/30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-[var(--color-primary)]" />
+                        <div className="w-12 h-6 bg-[#FAFAF8] border border-[#E5E7EB] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[3px] after:left-[3px] after:bg-[#E5E7EB] peer-checked:after:bg-[#111827] after:rounded-full after:h-[18px] after:w-[18px] after:transition-all peer-checked:bg-[#FAFAF8] peer-checked:border-[#111827]" />
                       </div>
                     </label>
                   ))}
                 </div>
 
                 {formData.disabilityType === 'BLIND' && (
-                  <div className="p-4 bg-blue-50 border border-blue-200 rounded-xl text-sm text-blue-800 font-sans">
+                  <div className="p-5 bg-white shadow-sm border border-[#111827] rounded-[20px] text-[13px] text-[#111827] font-light leading-relaxed">
                     🎤 Voice Navigation is enabled — you can say <strong>"Hello Bandhu"</strong> anytime to give voice commands across the entire site.
                   </div>
                 )}
                 {formData.disabilityType === 'DEAF' && (
-                  <div className="p-4 bg-teal-50 border border-teal-200 rounded-xl text-sm text-teal-800 font-sans">
+                  <div className="p-5 bg-white shadow-sm border border-[#111827] rounded-[20px] text-[13px] text-[#111827] font-light leading-relaxed">
                     🤟 Sign Language Detection will auto-activate during your interview sessions. Interviewers' speech will appear as live captions.
                   </div>
                 )}
@@ -331,22 +342,40 @@ export default function SignupSeeker() {
           </AnimatePresence>
 
           {/* Navigation buttons */}
-          <div className="flex justify-between gap-4 pt-4 border-t border-[var(--color-border)]">
+          <div className="flex justify-between gap-4 pt-8 mt-8 border-t border-[#E5E7EB]">
             {step > 1 ? (
-              <Button type="button" variant="outline" onClick={handleBack} className="w-32">← Back</Button>
+              <button type="button" onClick={handleBack} className="w-32 border border-[#E5E7EB] bg-white text-[#111827] py-4 text-[11px] uppercase tracking-widest font-bold hover:border-[#111827] transition-colors rounded-full shadow-sm">
+                ← Back
+              </button>
             ) : (
-              <Link to="/signup" className="text-sm text-gray-500 font-sans hover:underline self-center">← Choose role</Link>
+              <Link to="/signup" className="text-[11px] uppercase tracking-widest text-[#475569] hover:text-[#111827] font-bold self-center border-b border-transparent hover:border-[#111827] transition-all pb-0.5">
+                ← Back
+              </Link>
             )}
-            <Button type="submit" isLoading={loading} className="flex-1 max-w-xs ml-auto">
+            <button type="submit" disabled={loading} className="flex-1 border border-[#111827] bg-[#111827] text-white py-4 text-[11px] uppercase tracking-widest font-bold hover:bg-[#475569] hover:border-[#475569] transition-colors rounded-full shadow-md">
               {step < 3 ? 'Continue →' : 'Create Account'}
-            </Button>
+            </button>
           </div>
 
-          <p className="text-center text-sm font-sans text-gray-600">
+          <p className="text-center text-[12px] text-[#475569] font-light pt-6">
             Already have an account?{' '}
-            <Link to="/login" className="text-[var(--color-primary)] font-bold hover:underline">Log in</Link>
+            <Link to="/login" className="text-[#111827] font-semibold border-b border-[#111827] hover:opacity-50 pb-0.5">Log in</Link>
           </p>
         </form>
+      </div>
+
+      {/* Right Pane - Vibrant Editorial Image */}
+      <div className="hidden lg:flex lg:w-[55%] relative h-screen bg-[#F3F4F6] border-l border-[#E5E7EB] items-center justify-center overflow-hidden">
+        <img 
+          src="https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&q=80&w=1200" 
+          alt="Minimalist architecture" 
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+        <div className="absolute bottom-12 right-12 text-white text-right z-10">
+           <p className="font-serif text-3xl font-bold leading-tight mb-2">"True inclusion starts with design."</p>
+           <p className="text-white/90 text-[11px] uppercase tracking-widest font-bold">SkillAble Platform</p>
+        </div>
       </div>
     </div>
   )

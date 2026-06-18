@@ -2,8 +2,6 @@ import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Building2, Info, ArrowLeft } from 'lucide-react'
-import { Button } from '../components/common/Button'
-import { Input } from '../components/common/Input'
 import { useAuthStore } from '../store/authStore'
 import api from '../api/axios'
 
@@ -78,107 +76,141 @@ export default function SignupEmployer() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-[var(--color-surface)]">
-      {/* Top Bar Simple */}
-      <header className="px-6 py-4 flex items-center justify-between border-b border-[var(--color-border)] bg-white sticky top-0 z-30">
-        <Link to="/" className="text-2xl font-serif text-[var(--color-primary)] font-bold focus-ring rounded-md">SkillAble</Link>
-        <Link to="/signup">
-          <Button variant="ghost" size="sm" className="hidden sm:flex gap-2">
-            <ArrowLeft className="w-4 h-4" /> Change Role
-          </Button>
-        </Link>
-      </header>
+    <div className="flex min-h-screen bg-[#FAFAF8] text-[#111827] font-sans">
 
-      <div className="flex-1 flex flex-col justify-center px-6 py-12 w-full max-w-4xl mx-auto">
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-white rounded-[2rem] shadow-sm border border-[var(--color-border)] p-8 sm:p-12"
-        >
-          <div className="mb-8 flex items-start gap-6">
-            <div className="w-16 h-16 rounded-2xl bg-teal-50 flex items-center justify-center shrink-0">
-              <Building2 className="w-8 h-8 text-[var(--color-primary)]" />
-            </div>
-            <div>
-              <h1 className="text-3xl font-serif font-bold text-gray-900">Register as an Employer</h1>
-              <p className="mt-2 text-lg text-gray-600 font-sans">Join hundreds of inclusive companies hiring exceptional talent.</p>
-            </div>
+      {/* ── Left form pane ── */}
+      <div className="w-full lg:w-[45%] flex flex-col px-6 py-12 sm:px-12 xl:px-24 relative z-10 overflow-y-auto">
+        
+        <div className="mb-12 mt-4 lg:mt-0">
+          <Link to="/" style={{ fontFamily: 'var(--font-serif)' }} className="text-2xl font-bold tracking-tight text-[#111827]">
+            SkillAble.
+          </Link>
+        </div>
+
+        <div className="mb-10 max-w-lg mx-auto w-full">
+          <div className="flex items-center gap-4 mb-4">
+            <div className="w-8 h-[1px] bg-[#111827]"></div>
+            <span className="text-[#111827] font-bold text-[10px] uppercase tracking-widest">Hire Talent</span>
           </div>
-
-          <div className="bg-amber-50 text-amber-800 border border-amber-200 rounded-xl p-4 flex gap-3 mb-8">
-            <Info className="w-5 h-5 mt-0.5 shrink-0" />
-            <p className="font-sans text-sm font-medium">Your account will be reviewed by our team before you can post jobs. This ensures the quality and safety of opportunities for our users.</p>
+          <h1 className="text-3xl lg:text-4xl font-serif font-bold text-[#111827] mb-4">Register as an Employer.</h1>
+          
+          <div className="bg-[#FAFAF8] border border-[#111827] rounded-[20px] p-5 flex gap-4 mt-6">
+            <Info className="w-5 h-5 text-[#111827] shrink-0 mt-0.5" />
+            <p className="font-light text-[12px] text-[#111827] leading-relaxed">Your account will be reviewed by our team before you can post jobs. This ensures the quality and safety of opportunities for our users.</p>
           </div>
+        </div>
 
-          <form onSubmit={handleSubmit} className="space-y-8">
-            {error && (
-              <div className="p-4 bg-red-50 text-red-800 rounded-xl border border-red-200 text-sm font-medium" role="alert">
-                {error}
+        <form onSubmit={handleSubmit} className="space-y-8 max-w-lg mx-auto w-full" noValidate>
+          {error && (
+            <div className="p-4 bg-red-50 text-red-800 border border-red-200 text-[13px] font-medium" role="alert">
+              {error}
+            </div>
+          )}
+
+          <div className="space-y-8">
+            {/* Account Details */}
+            <div className="space-y-5">
+              <h3 className="text-[11px] font-bold uppercase tracking-widest text-[#111827] border-b border-[#E5E7EB] pb-2">Account Details</h3>
+              
+              <div>
+                <label className="block text-[10px] font-bold uppercase tracking-widest text-[#111827] mb-2 ml-4">Full Name</label>
+                <input name="fullName" value={formData.fullName} onChange={handleChange} required className="w-full bg-white border border-[#E5E7EB] px-6 py-4 text-[14px] focus:outline-none focus:border-[#111827] rounded-full shadow-sm" />
               </div>
-            )}
-
-            <div className="grid md:grid-cols-2 gap-x-8 gap-y-6">
-              <div className="space-y-6">
-                <h3 className="text-xl font-serif font-bold border-b border-[var(--color-border)] pb-2 text-gray-800">Account Details</h3>
-                <Input label="Full Name" name="fullName" value={formData.fullName} onChange={handleChange} required />
-                <Input label="Work Email" name="email" type="email" value={formData.email} onChange={handleChange} required />
-                <Input label="Password" name="password" type="password" value={formData.password} onChange={handleChange} required />
+              
+              <div>
+                <label className="block text-[10px] font-bold uppercase tracking-widest text-[#111827] mb-2 ml-4">Work Email</label>
+                <input name="email" type="email" value={formData.email} onChange={handleChange} required className="w-full bg-white border border-[#E5E7EB] px-6 py-4 text-[14px] focus:outline-none focus:border-[#111827] rounded-full shadow-sm" />
               </div>
+              
+              <div>
+                <label className="block text-[10px] font-bold uppercase tracking-widest text-[#111827] mb-2 ml-4">Password</label>
+                <input name="password" type="password" value={formData.password} onChange={handleChange} required className="w-full bg-white border border-[#E5E7EB] px-6 py-4 text-[14px] focus:outline-none focus:border-[#111827] rounded-full shadow-sm" />
+              </div>
+            </div>
 
-              <div className="space-y-6">
-                <h3 className="text-xl font-serif font-bold border-b border-[var(--color-border)] pb-2 text-gray-800">Company Details</h3>
-                <Input label="Company Name" name="companyName" value={formData.companyName} onChange={handleChange} required />
-                <Input label="Website" name="companyWebsite" type="url" value={formData.companyWebsite} onChange={handleChange} placeholder="https://" required />
-                
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="flex flex-col gap-1.5">
-                    <label htmlFor="industry" className="text-base font-sans font-medium text-[var(--color-foreground)]">Industry</label>
-                    <select
-                      id="industry"
-                      name="industry"
-                      value={formData.industry}
-                      onChange={handleChange}
-                      required
-                      className="w-full px-4 py-3 min-h-[44px] rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] text-base font-sans outline-none focus:ring-4 focus:ring-[var(--color-primary)]/30 focus:border-[var(--color-primary)] hover:border-gray-400 transition-colors"
-                    >
-                      <option value="">Select industry...</option>
-                      <option value="IT">Information Technology</option>
-                      <option value="FINANCE">Finance</option>
-                      <option value="HEALTHCARE">Healthcare</option>
-                      <option value="RETAIL">Retail</option>
-                      <option value="EDUCATION">Education</option>
-                      <option value="OTHER">Other</option>
-                    </select>
-                  </div>
-                  <Input label="Location" name="location" value={formData.location} onChange={handleChange} required placeholder="City, State" />
+            {/* Company Details */}
+            <div className="space-y-5 pt-4">
+              <h3 className="text-[11px] font-bold uppercase tracking-widest text-[#111827] border-b border-[#E5E7EB] pb-2">Company Details</h3>
+              
+              <div>
+                <label className="block text-[10px] font-bold uppercase tracking-widest text-[#111827] mb-2 ml-4">Company Name</label>
+                <input name="companyName" value={formData.companyName} onChange={handleChange} required className="w-full bg-white border border-[#E5E7EB] px-6 py-4 text-[14px] focus:outline-none focus:border-[#111827] rounded-full shadow-sm" />
+              </div>
+              
+              <div>
+                <label className="block text-[10px] font-bold uppercase tracking-widest text-[#111827] mb-2 ml-4">Website</label>
+                <input name="companyWebsite" type="url" value={formData.companyWebsite} onChange={handleChange} required placeholder="https://" className="w-full bg-white border border-[#E5E7EB] px-6 py-4 text-[14px] focus:outline-none focus:border-[#111827] rounded-full shadow-sm" />
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-[10px] font-bold uppercase tracking-widest text-[#111827] mb-2 ml-4">Industry</label>
+                  <select
+                    name="industry"
+                    value={formData.industry}
+                    onChange={handleChange}
+                    required
+                    className="w-full bg-white border border-[#E5E7EB] px-6 py-4 text-[14px] focus:outline-none focus:border-[#111827] rounded-full shadow-sm appearance-none"
+                  >
+                    <option value="">Select...</option>
+                    <option value="IT">Technology</option>
+                    <option value="FINANCE">Finance</option>
+                    <option value="HEALTHCARE">Healthcare</option>
+                    <option value="RETAIL">Retail</option>
+                    <option value="EDUCATION">Education</option>
+                    <option value="OTHER">Other</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-[10px] font-bold uppercase tracking-widest text-[#111827] mb-2 ml-4">Location</label>
+                  <input name="location" value={formData.location} onChange={handleChange} required placeholder="City, State" className="w-full bg-white border border-[#E5E7EB] px-6 py-4 text-[14px] focus:outline-none focus:border-[#111827] rounded-full shadow-sm" />
                 </div>
               </div>
-            </div>
 
-            <div className="flex flex-col gap-1.5 pt-4">
-              <label htmlFor="companyDescription" className="text-base font-sans font-medium text-[var(--color-foreground)]">Company Description</label>
-              <textarea
-                id="companyDescription"
-                name="companyDescription"
-                value={formData.companyDescription}
-                onChange={handleChange}
-                required
-                rows={4}
-                className="w-full px-4 py-3 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] text-base font-sans outline-none focus:ring-4 focus:ring-[var(--color-primary)]/30 focus:border-[var(--color-primary)] hover:border-gray-400 transition-colors resize-y"
-                placeholder="Tell us about your company and your commitment to an inclusive workplace..."
-              />
+              <div>
+                <label className="block text-[10px] font-bold uppercase tracking-widest text-[#111827] mb-2 ml-4">Company Description</label>
+                <textarea
+                  name="companyDescription"
+                  value={formData.companyDescription}
+                  onChange={handleChange}
+                  required
+                  rows={4}
+                  placeholder="Tell us about your company and your commitment to an inclusive workplace..."
+                  className="w-full bg-white border border-[#E5E7EB] px-6 py-4 text-[14px] focus:outline-none focus:border-[#111827] rounded-[24px] shadow-sm resize-y"
+                />
+              </div>
             </div>
+          </div>
 
-            <div className="pt-6 border-t border-[var(--color-border)] flex flex-col sm:flex-row justify-between items-center gap-4">
-              <p className="text-sm text-gray-500 order-last sm:order-first">
-                Already have an account? <Link to="/login" className="text-[var(--color-primary)] font-bold hover:underline focus-ring rounded-sm">Log in</Link>
-              </p>
-              <Button type="submit" size="lg" isLoading={loading} className="w-full sm:w-auto px-12">
-                Register as Employer
-              </Button>
-            </div>
-          </form>
-        </motion.div>
+          <div className="flex justify-between gap-4 pt-8 mt-8 border-t border-[#E5E7EB] items-center">
+            <Link to="/signup" className="text-[11px] uppercase tracking-widest text-[#475569] hover:text-[#111827] font-bold border-b border-transparent hover:border-[#111827] transition-all pb-0.5">
+              ← Change Role
+            </Link>
+            
+            <button type="submit" disabled={loading} className="w-full sm:w-auto px-12 bg-[#111827] text-white py-4 text-[11px] uppercase tracking-widest font-bold hover:bg-[#475569] transition-colors rounded-full shadow-md">
+              {loading ? "Registering..." : "Register"}
+            </button>
+          </div>
+
+          <p className="text-center text-[12px] text-[#475569] font-light pt-6">
+            Already have an account?{' '}
+            <Link to="/login" className="text-[#111827] font-semibold border-b border-[#111827] hover:opacity-50 pb-0.5">Log in</Link>
+          </p>
+        </form>
+      </div>
+
+      {/* Right Pane - Vibrant Editorial Image */}
+      <div className="hidden lg:flex lg:w-[55%] relative h-screen bg-[#F3F4F6] border-l border-[#E5E7EB] items-center justify-center overflow-hidden">
+        <img 
+          src="https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&q=80&w=1200" 
+          alt="Minimalist architecture" 
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+        <div className="absolute bottom-12 right-12 text-white text-right z-10">
+           <p className="font-serif text-3xl font-bold leading-tight mb-2">"True inclusion starts with design."</p>
+           <p className="text-white/90 text-[11px] uppercase tracking-widest font-bold">SkillAble Platform</p>
+        </div>
       </div>
     </div>
   )
