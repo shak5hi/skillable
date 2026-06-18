@@ -1,467 +1,347 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { Link } from 'react-router-dom'
-import { 
-  ArrowRight, Monitor, Keyboard, Type, 
-  Eye, Captions, Palette, ChevronDown, BookOpen, Briefcase, 
-  Target, TrendingUp, Search, UserCheck
-} from 'lucide-react'
 
-// -----------------------------------------------------------------------------
-// Isolated Landing Navbar
-// -----------------------------------------------------------------------------
-function LandingNavbar() {
-  const [scrolled, setScrolled] = useState(false)
+// Minimalist icons
+const PlayIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10"></circle>
+    <polygon points="10 8 16 12 10 16 10 8"></polygon>
+  </svg>
+)
 
-  useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20)
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+const AppleIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 20.592c-2.316 0-4.632-1.34-5.83-1.34-1.22 0-3.355 1.306-5.264 1.306-2.528 0-4.85-1.464-6.14-3.714-2.613-4.526-.67-11.233 1.88-14.887 1.256-1.802 3.124-2.943 5.143-2.977 1.836-.034 3.565 1.235 4.698 1.235 1.133 0 3.14-1.503 5.316-1.27 2.274.244 4.34 1.127 5.516 2.853-4.708 2.894-3.957 9.537.747 11.455-1.126 2.766-3.214 5.34-5.32 5.34H12zM15.545 3.393c.96-1.16 1.606-2.775 1.43-4.393-1.396.056-3.076.93-4.07 2.057-.89.997-1.666 2.653-1.455 4.237 1.558.12 3.136-.738 4.095-1.902z" transform="translate(4, 0)" />
+  </svg>
+)
 
-  return (
-    <header className={`fixed top-0 left-0 right-0 z-50 transition-colors duration-300 ${scrolled ? 'bg-white shadow-sm' : 'bg-transparent'}`}>
-      <div className="max-w-7xl mx-auto px-6 sm:px-12 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-8">
-          <Link to="/" className="text-2xl font-bold tracking-tight text-[#111827]">
-            SkillAble
-          </Link>
-          <nav className="hidden lg:flex items-center gap-6">
-            <a href="#features" className="text-sm font-medium text-[#475569] hover:text-[#111827]">Features</a>
-            <a href="#how-it-works" className="text-sm font-medium text-[#475569] hover:text-[#111827]">How It Works</a>
-            <a href="#stories" className="text-sm font-medium text-[#475569] hover:text-[#111827]">Success Stories</a>
-            <a href="#accessibility" className="text-sm font-medium text-[#475569] hover:text-[#111827]">Accessibility</a>
-            <a href="#contact" className="text-sm font-medium text-[#475569] hover:text-[#111827]">Contact</a>
-          </nav>
-        </div>
-        <div className="flex items-center gap-4">
-          <Link to="/login" className="hidden sm:block text-sm font-medium text-[#475569] hover:text-[#111827]">
-            Login
-          </Link>
-          <Link to="/signup">
-            <button className="bg-[#1E293B] text-white px-5 py-2.5 rounded-full text-sm font-medium hover:bg-[#111827] transition-colors">
-              Get Started
-            </button>
-          </Link>
-        </div>
-      </div>
-    </header>
-  )
-}
+// Reusable editorial section divider
+const SectionDivider = ({ number, title }) => (
+  <div className="w-full flex items-center gap-6 mb-16 lg:mb-24">
+    <div className="flex gap-2 items-center text-[11px] uppercase tracking-widest text-[#475569] whitespace-nowrap">
+      <span className="font-semibold">{number}</span>
+      <span>{title}</span>
+    </div>
+    <div className="h-[1px] bg-[#E5E7EB] flex-1"></div>
+    <span className="text-[11px] uppercase tracking-widest text-[#111827] font-semibold whitespace-nowrap">skillable.com</span>
+    <div className="h-[1px] bg-[#E5E7EB] flex-1"></div>
+    <span className="text-[11px] text-[#475569] whitespace-nowrap">©{new Date().getFullYear()}</span>
+  </div>
+)
 
-// -----------------------------------------------------------------------------
-// Isolated Landing Footer
-// -----------------------------------------------------------------------------
-function LandingFooter() {
-  return (
-    <footer id="contact" className="bg-white border-t border-[#E5E7EB] pt-16 pb-8 px-6 sm:px-12">
-      <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-5 gap-8 mb-12">
-        <div className="col-span-2 space-y-4">
-          <Link to="/" className="text-2xl font-bold tracking-tight text-[#111827]">
-            SkillAble
-          </Link>
-          <p className="text-[#475569] text-sm max-w-xs leading-relaxed">
-            Empowering abilities into opportunities. Designed for everyone.
-          </p>
-        </div>
-        <div>
-          <h4 className="font-semibold text-[#111827] mb-4">Product</h4>
-          <ul className="space-y-3">
-            <li><Link to="/jobs" className="text-sm text-[#475569] hover:text-[#111827]">Find Jobs</Link></li>
-            <li><Link to="/employers" className="text-sm text-[#475569] hover:text-[#111827]">For Employers</Link></li>
-            <li><a href="#features" className="text-sm text-[#475569] hover:text-[#111827]">Features</a></li>
-          </ul>
-        </div>
-        <div>
-          <h4 className="font-semibold text-[#111827] mb-4">Resources</h4>
-          <ul className="space-y-3">
-            <li><Link to="/resources" className="text-sm text-[#475569] hover:text-[#111827]">Blog</Link></li>
-            <li><a href="#accessibility" className="text-sm text-[#475569] hover:text-[#111827]">Accessibility</a></li>
-            <li><a href="#faq" className="text-sm text-[#475569] hover:text-[#111827]">FAQ</a></li>
-          </ul>
-        </div>
-        <div>
-          <h4 className="font-semibold text-[#111827] mb-4">Company</h4>
-          <ul className="space-y-3">
-            <li><Link to="/about" className="text-sm text-[#475569] hover:text-[#111827]">About Us</Link></li>
-            <li><a href="#contact" className="text-sm text-[#475569] hover:text-[#111827]">Contact</a></li>
-          </ul>
-        </div>
-      </div>
-      <div className="max-w-7xl mx-auto pt-8 border-t border-[#E5E7EB] flex flex-col md:flex-row items-center justify-between gap-4">
-        <p className="text-[#475569] text-sm">© {new Date().getFullYear()} SkillAble. All rights reserved.</p>
-        <div className="flex gap-4">
-          <Link to="/privacy" className="text-[#475569] text-sm hover:text-[#111827]">Privacy</Link>
-          <Link to="/terms" className="text-[#475569] text-sm hover:text-[#111827]">Terms</Link>
-        </div>
-      </div>
-    </footer>
-  )
-}
-
-// -----------------------------------------------------------------------------
-// Landing Page Main Component
-// -----------------------------------------------------------------------------
 export default function Landing() {
   return (
-    <div className="min-h-screen bg-[#FAFAF8] text-[#111827] font-sans selection:bg-[#3B82F6] selection:text-white" style={{ fontFamily: '"Inter", sans-serif' }}>
-      <LandingNavbar />
+    // Isolation wrapper: Forces styles to override any global app styles (like high contrast green links)
+    <div 
+      className="min-h-screen bg-[#FFFFFF] text-[#111827] selection:bg-[#4F7DFF] selection:text-white pb-32" 
+      style={{ fontFamily: '"Inter", sans-serif' }}
+    >
+      
+      {/* --------------------------------------------------------------------------
+          HEADER (Editorial Minimalist)
+          -------------------------------------------------------------------------- */}
+      <header className="fixed top-0 left-0 w-full z-50 py-5 px-6 lg:px-12 flex items-center justify-between bg-white/95 backdrop-blur-sm border-b border-[#E5E7EB]">
+        <div className="flex-1 hidden md:flex items-center gap-8">
+          <span className="text-[10px] uppercase tracking-[0.2em] text-[#475569] font-semibold">01 Overview</span>
+        </div>
+        <div className="flex-1 flex justify-start md:justify-center">
+          <Link to="/" style={{ color: '#111827', textDecoration: 'none' }} className="text-[28px] font-bold tracking-tight">
+            <span style={{ fontFamily: 'var(--font-serif)' }}>SkillAble.</span>
+          </Link>
+        </div>
+        <div className="flex-1 flex justify-end gap-6 items-center">
+          <Link to="/login" style={{ color: '#111827', textDecoration: 'none' }} className="text-[13px] font-semibold tracking-wide uppercase hover:opacity-50 transition-opacity hidden sm:block">
+            Log In
+          </Link>
+          <Link to="/signup" style={{ background: '#1E293B', color: '#FFFFFF', textDecoration: 'none', border: 'none' }} className="px-6 py-2.5 rounded-full text-[13px] font-medium transition-transform hover:scale-105">
+            Get Started
+          </Link>
+        </div>
+      </header>
 
-      <main className="pt-32 pb-16 overflow-hidden">
-        {/* HERO SECTION */}
-        <section className="max-w-7xl mx-auto px-6 sm:px-12 grid lg:grid-cols-2 gap-16 items-center">
-          <div className="space-y-8 relative z-10">
-            <div className="inline-block px-3 py-1 bg-white border border-[#E5E7EB] rounded-full text-xs font-semibold text-[#475569] tracking-wide uppercase">
-              Accessible Learning & Careers
-            </div>
-            
-            <h1 className="text-5xl md:text-6xl lg:text-[4.5rem] font-bold leading-[1.1] tracking-tight">
-              Empowering <span className="text-[#3B82F6]">Abilities</span> Into Opportunities.
-            </h1>
-            
-            <p className="text-lg md:text-xl text-[#475569] max-w-lg leading-relaxed">
-              SkillAble helps differently abled individuals discover skills, learn at their own pace, connect with mentors and unlock meaningful employment opportunities.
-            </p>
-            
-            <div className="flex flex-col sm:flex-row gap-4 pt-2">
-              <Link to="/signup">
-                <button className="w-full sm:w-auto bg-[#1E293B] text-white px-8 py-3.5 rounded-full text-base font-medium hover:bg-[#111827] transition-colors flex items-center justify-center gap-2">
-                  Get Started <ArrowRight className="w-4 h-4" />
-                </button>
-              </Link>
-              <button className="w-full sm:w-auto bg-white border border-[#E5E7EB] text-[#111827] px-8 py-3.5 rounded-full text-base font-medium hover:bg-gray-50 transition-colors flex items-center justify-center gap-2">
-                <div className="w-5 h-5 rounded-full border-2 border-[#111827] flex items-center justify-center">
-                  <div className="w-1.5 h-1.5 bg-[#111827] rounded-sm translate-x-[1px]" style={{ clipPath: 'polygon(0 0, 0 100%, 100% 50%)' }} />
-                </div>
-                Watch Demo
-              </button>
-            </div>
-            
-            <div className="pt-8 max-w-sm">
-              <div className="flex gap-1 text-[#111827] mb-3">
-                {[1,2,3,4,5].map(i => <StarIcon key={i} className="w-4 h-4 fill-current" />)}
+      {/* --------------------------------------------------------------------------
+          HERO SECTION (Grup.co Layout, Fixed Bugs)
+          -------------------------------------------------------------------------- */}
+      <section className="relative h-[100dvh] min-h-[600px] w-full max-w-[1440px] mx-auto px-6 lg:px-12 pt-[80px] pb-8 flex flex-col lg:flex-row items-center justify-between gap-8 overflow-hidden bg-[#FAFAF8]">
+        
+        {/* Left Column */}
+        <div className="w-full lg:w-[45%] z-10 flex flex-col justify-center h-full">
+          <div className="flex items-center gap-4 mb-4 lg:mb-6">
+            <div className="w-2 h-2 rounded-full bg-[#111827]"></div>
+            <div className="w-12 h-[2px] bg-[#111827]"></div>
+            <span className="text-[#111827] font-semibold text-[12px] uppercase tracking-widest">Accessible learning platform</span>
+          </div>
+          
+          <h1 className="text-[48px] sm:text-[56px] lg:text-[72px] xl:text-[80px] leading-[1.05] tracking-tight text-[#111827] mb-6" style={{ fontFamily: 'var(--font-serif)' }}>
+            Empowering<br />
+            <span style={{ color: '#4F7DFF' }}>Abilities</span> Into<br />
+            Opportunities.
+          </h1>
+          
+          <p className="text-[16px] lg:text-[18px] text-[#475569] leading-[1.6] max-w-[480px] mb-8 lg:mb-12 font-light">
+            SkillAble helps differently abled individuals discover skills, learn at their own pace, connect with mentors and unlock meaningful employment opportunities.
+          </p>
+          
+          <div className="flex items-center gap-6 lg:gap-8 mt-2">
+            <Link 
+              to="/signup" 
+              style={{ backgroundColor: '#111827', color: '#FFFFFF', textDecoration: 'none', border: 'none', outline: 'none' }} 
+              className="px-8 py-3.5 lg:py-4 rounded-full text-[14px] font-semibold tracking-wide transition-all hover:bg-[#4F7DFF] hover:scale-105 whitespace-nowrap"
+            >
+              Get Started
+            </Link>
+            <button 
+              style={{ backgroundColor: 'transparent', color: '#475569', border: 'none', outline: 'none', textDecoration: 'none' }} 
+              className="flex items-center gap-2 font-medium text-[14px] hover:text-[#111827] transition-colors cursor-pointer"
+            >
+              <div className="w-8 h-8 rounded-full border border-[#E5E7EB] flex items-center justify-center">
+                <PlayIcon />
               </div>
-              <p className="text-sm text-[#475569] font-medium leading-relaxed">
-                Trusted by students, educators, NGOs and organizations.
+              <span className="border-b border-transparent hover:border-[#111827] pb-0.5">See How It Works</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Right Column (Arch & Floating Cards) */}
+        <div className="w-full lg:w-[50%] relative h-[50vh] lg:h-[85%] flex items-end justify-center">
+          
+          {/* Main Arch Shape */}
+          <div className="relative w-[80%] max-w-[420px] h-[95%] bg-[#4F7DFF] z-0 overflow-hidden" style={{ borderRadius: '300px 300px 20px 20px' }}>
+            <img 
+              src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=800" 
+              alt="Professional portrait" 
+              className="w-full h-full object-cover object-top mix-blend-multiply opacity-90 scale-[1.15] origin-top"
+            />
+          </div>
+
+          {/* Floating Card 1: Bottom Left */}
+          <div className="absolute bottom-[5%] left-0 z-20 flex items-center">
+            <div className="bg-white rounded-[20px] p-6 shadow-[0_10px_40px_rgba(0,0,0,0.06)] w-[200px] lg:w-[220px] relative z-10 border border-[#E5E7EB]">
+              <h3 className="text-[13px] font-semibold text-[#111827] mb-1">Skill Matching</h3>
+              <p className="text-[24px] font-bold text-[#111827] mb-1">98.5%</p>
+              <p className="text-[10px] text-[#16A34A] font-medium mb-4">+12.5% Success</p>
+              <svg width="100%" height="40" viewBox="0 0 100 40" className="overflow-visible">
+                <path d="M0,30 L20,25 L40,35 L60,15 L80,20 L100,5" fill="none" stroke="#111827" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                <circle cx="60" cy="15" r="3" fill="#111827" />
+              </svg>
+              <div className="flex justify-between mt-3 text-[9px] text-[#475569] font-medium">
+                <span>1D</span><span>1W</span><span>1M</span><span>6M</span><span>1Y</span>
+              </div>
+            </div>
+            <svg className="w-16 h-8 -ml-2 pointer-events-none" viewBox="0 0 64 32">
+              <path d="M 0 16 Q 32 16 60 32" fill="none" stroke="#111827" strokeWidth="1.5" />
+              <polygon points="60,32 55,27 64,27" fill="#111827" transform="rotate(20 60 32)" />
+            </svg>
+          </div>
+
+          {/* Floating Card 2: Top Right */}
+          <div className="absolute top-[25%] right-[5%] z-20 flex items-center">
+            <svg className="w-12 h-4 mr-2 pointer-events-none overflow-visible" viewBox="0 0 48 16">
+              <circle cx="2" cy="8" r="3" fill="#111827" />
+              <line x1="2" y1="8" x2="48" y2="8" stroke="#111827" strokeWidth="1.5" />
+            </svg>
+            <div className="flex flex-col items-start">
+              <div className="w-8 h-8 bg-[#111827] rounded-full flex items-center justify-center text-white mb-2 ml-4 shadow-md">
+                <AppleIcon />
+              </div>
+              <div className="bg-[#4F7DFF] text-white rounded-[12px] px-4 py-2 shadow-lg text-[13px] font-semibold flex items-center gap-2 whitespace-nowrap">
+                Job Recommendations
+              </div>
+            </div>
+          </div>
+
+          {/* Floating Card 3: Mentor Support (Moved UP and LEFT to avoid global green voice widget) */}
+          <div className="absolute top-[60%] right-[10%] z-20 flex items-center">
+            <svg className="w-8 h-4 mr-2 pointer-events-none overflow-visible" viewBox="0 0 32 16">
+              <circle cx="2" cy="8" r="3" fill="#111827" />
+              <line x1="2" y1="8" x2="32" y2="8" stroke="#111827" strokeWidth="1.5" />
+            </svg>
+            <div className="bg-white rounded-full p-2 pr-5 flex items-center gap-3 shadow-[0_4px_20px_rgba(0,0,0,0.06)] border border-[#E5E7EB]">
+              <div className="flex items-center -space-x-3">
+                <div className="w-10 h-10 rounded-full border-2 border-white overflow-hidden z-10">
+                  <img src="https://i.pravatar.cc/150?u=a1" alt="Mentor" className="w-full h-full object-cover" />
+                </div>
+                <div className="w-10 h-10 rounded-full border-2 border-white overflow-hidden z-0 bg-gray-100">
+                  <img src="https://i.pravatar.cc/150?u=a2" alt="Mentor" className="w-full h-full object-cover grayscale opacity-80" />
+                </div>
+              </div>
+              <span className="text-[13px] font-bold text-[#111827]">Mentor Support</span>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      {/* --------------------------------------------------------------------------
+          EDITORIAL SECTIONS (findjobbled.co Layout Replication)
+          -------------------------------------------------------------------------- */}
+      <main className="max-w-[1280px] mx-auto px-6 lg:px-12 mt-24 space-y-32">
+
+        {/* FEATURES GRID SECTION */}
+        <section>
+          <SectionDivider number="02" title="Platform Focus" />
+          
+          <div className="flex flex-col lg:flex-row gap-12 lg:gap-24 mb-16">
+            <h2 className="lg:w-[60%] text-[40px] md:text-[56px] leading-[1.1] tracking-tight text-[#111827]" style={{ fontFamily: 'var(--font-serif)' }}>
+              We provide Access,<br/>Learning, and Opportunity<br/>for everyone
+            </h2>
+            <div className="lg:w-[40%] flex flex-col justify-end">
+              <p className="text-[15px] leading-[1.8] text-[#475569] font-light">
+                Welcome to SkillAble, your inclusive platform designed to bridge the gap between talented differently-abled individuals and forward-thinking employers. From smart matching algorithms to fully accessible interview rooms, we ensure your career journey is completely barrier-free.
+              </p>
+              <p className="text-[15px] leading-[1.8] text-[#475569] font-light mt-6">
+                Committed to true inclusion, we've built voice navigation, sign-language support, and screen-reader compatibility directly into our core.
               </p>
             </div>
           </div>
 
-          <div className="relative flex justify-center lg:justify-end min-h-[500px]">
-            {/* The main portrait in a soft arch shape */}
-            <div className="relative z-10 w-[340px] md:w-[400px] h-[480px] md:h-[560px] bg-[#DBEAFE] overflow-hidden shadow-sm border border-[#E5E7EB]" style={{ borderRadius: '200px 200px 40px 40px' }}>
-              <img 
-                src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=800" 
-                alt="Confident professional smiling"
-                className="w-full h-full object-cover mix-blend-multiply opacity-90"
-              />
-            </div>
-            
-            {/* Floating Callouts - Left side */}
-            <div className="absolute top-[20%] -left-4 md:-left-12 z-20 bg-white border border-[#E5E7EB] rounded-2xl p-3 flex items-center gap-3 shadow-[0_4px_20px_rgba(0,0,0,0.04)]">
-              <div className="w-8 h-8 rounded-full bg-[#FAFAF8] flex items-center justify-center border border-[#E5E7EB]">
-                <BookOpen className="w-4 h-4 text-[#475569]" />
-              </div>
-              <span className="text-sm font-medium text-[#111827]">Skill Matching</span>
-            </div>
-            
-            <div className="absolute bottom-[25%] -left-8 md:left-4 z-20 bg-white border border-[#E5E7EB] rounded-2xl p-3 flex items-center gap-3 shadow-[0_4px_20px_rgba(0,0,0,0.04)]">
-              <div className="w-8 h-8 rounded-full bg-[#FAFAF8] flex items-center justify-center border border-[#E5E7EB]">
-                <Target className="w-4 h-4 text-[#475569]" />
-              </div>
-              <span className="text-sm font-medium text-[#111827]">Mentor Guidance</span>
-            </div>
-
-            {/* Floating Callouts - Right side */}
-            <div className="absolute top-[35%] -right-4 md:-right-8 z-20 bg-white border border-[#E5E7EB] rounded-2xl p-3 flex items-center gap-3 shadow-[0_4px_20px_rgba(0,0,0,0.04)]">
-              <div className="w-8 h-8 rounded-full bg-[#FAFAF8] flex items-center justify-center border border-[#E5E7EB]">
-                <Briefcase className="w-4 h-4 text-[#475569]" />
-              </div>
-              <span className="text-sm font-medium text-[#111827]">Job Recommendations</span>
-            </div>
-            
-            <div className="absolute bottom-[10%] -right-2 md:right-12 z-20 bg-white border border-[#E5E7EB] rounded-2xl p-3 flex items-center gap-3 shadow-[0_4px_20px_rgba(0,0,0,0.04)]">
-              <div className="w-8 h-8 rounded-full bg-[#FAFAF8] flex items-center justify-center border border-[#E5E7EB]">
-                <TrendingUp className="w-4 h-4 text-[#475569]" />
-              </div>
-              <span className="text-sm font-medium text-[#111827]">Progress Tracking</span>
-            </div>
-            
-            {/* Elegant curved connecting lines (SVG) */}
-            <svg className="absolute inset-0 w-full h-full z-0 pointer-events-none hidden md:block">
-              {/* Connect Skill Matching to Image */}
-              <path d="M 0 150 Q 80 150 150 220" fill="none" stroke="#E5E7EB" strokeWidth="1.5" strokeDasharray="4 4" />
-              {/* Connect Mentor Guidance to Image */}
-              <path d="M 50 380 Q 120 380 180 320" fill="none" stroke="#E5E7EB" strokeWidth="1.5" strokeDasharray="4 4" />
-              {/* Connect Job Recommendations to Image */}
-              <path d="M 450 250 Q 380 250 320 200" fill="none" stroke="#E5E7EB" strokeWidth="1.5" strokeDasharray="4 4" />
-              {/* Connect Progress Tracking to Image */}
-              <path d="M 400 450 Q 350 450 280 400" fill="none" stroke="#E5E7EB" strokeWidth="1.5" strokeDasharray="4 4" />
-            </svg>
-          </div>
-        </section>
-
-        {/* TRUST SECTION */}
-        <section className="max-w-7xl mx-auto px-6 sm:px-12 mt-32">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+          <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
             {[
-              { val: '50K+', label: 'Learners empowered' },
-              { val: '10K+', label: 'Job opportunities' },
-              { val: '5K+', label: 'Mentors' },
-              { val: '95%', label: 'User satisfaction' },
-            ].map((stat, i) => (
-              <div key={i} className="bg-white border border-[#E5E7EB] rounded-[24px] p-8 text-center shadow-[0_2px_10px_rgba(0,0,0,0.02)]">
-                <div className="text-3xl md:text-4xl font-bold text-[#111827] mb-2 tracking-tight">{stat.val}</div>
-                <div className="text-sm font-medium text-[#475569]">{stat.label}</div>
+              { title: "Accessible Interview Rooms", img: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=600&q=80", desc: "Built-in voice navigation and sign-language support ensure you can present your best self in every single interview." },
+              { title: "AI Resume Analysis", img: "https://images.unsplash.com/photo-1586281380349-632531db7ed4?auto=format&fit=crop&w=600&q=80", desc: "Our platform evaluates your profile and suggests targeted improvements to boost your match rate with inclusive employers." },
+              { title: "Tailored Job Matching", img: "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?auto=format&fit=crop&w=600&q=80", desc: "Connect instantly with verified companies dedicated to diversity, with job recommendations perfectly aligned to your unique strengths." }
+            ].map((item, i) => (
+              <div key={i} className="group cursor-pointer">
+                <div className="w-full aspect-[4/3] overflow-hidden mb-6 bg-gray-100">
+                  <img src={item.img} alt={item.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 grayscale opacity-90" />
+                </div>
+                <h3 className="text-[18px] font-bold text-[#111827] mb-3 leading-snug">{item.title}</h3>
+                <p className="text-[13px] text-[#475569] leading-relaxed font-light mb-6">
+                  {item.desc}
+                </p>
+                <span className="text-[11px] font-bold uppercase tracking-widest text-[#111827] border-b border-[#111827] pb-1">Explore Feature</span>
               </div>
             ))}
           </div>
         </section>
 
-        {/* HOW IT WORKS */}
-        <section id="how-it-works" className="max-w-7xl mx-auto px-6 sm:px-12 mt-40">
-          <div className="mb-16 max-w-2xl">
-            <h2 className="text-3xl md:text-4xl font-bold text-[#111827] tracking-tight mb-4">How It Works</h2>
-            <p className="text-lg text-[#475569] leading-relaxed">Four simple steps towards unlocking your full potential in an inclusive environment.</p>
-          </div>
-          <div className="grid md:grid-cols-4 gap-6">
-            <div className="bg-white border border-[#E5E7EB] rounded-[28px] p-8 shadow-[0_2px_10px_rgba(0,0,0,0.02)] flex flex-col h-full">
-              <div className="w-12 h-12 bg-[#FAFAF8] rounded-2xl flex items-center justify-center border border-[#E5E7EB] mb-8">
-                <Search className="w-5 h-5 text-[#111827]" />
+        {/* VALUES SECTION (Staggered Layout) */}
+        <section>
+          <SectionDivider number="03" title="Our Mission" />
+          
+          <div className="flex flex-col lg:flex-row gap-16 lg:gap-24">
+            {/* Left Staggered Column */}
+            <div className="lg:w-[45%] flex flex-col items-start pt-12">
+              <div className="w-[85%] aspect-[3/4] overflow-hidden mb-8">
+                <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=600&q=80" alt="Empowerment" className="w-full h-full object-cover grayscale" />
               </div>
-              <h3 className="text-xl font-bold text-[#111827] mb-3">Discover Your Strengths</h3>
-              <p className="text-[#475569] text-sm leading-relaxed">Personalized assessments identify interests and abilities.</p>
+              <h3 className="text-[20px] font-bold text-[#111827] mb-3">Empowerment</h3>
+              <p className="text-[14px] text-[#475569] font-light max-w-[280px]">Dedicated to giving you the tools, mentors, and opportunities to take full control of your career path.</p>
             </div>
-            <div className="bg-white border border-[#E5E7EB] rounded-[28px] p-8 shadow-[0_2px_10px_rgba(0,0,0,0.02)] flex flex-col h-full">
-              <div className="w-12 h-12 bg-[#FAFAF8] rounded-2xl flex items-center justify-center border border-[#E5E7EB] mb-8">
-                <BookOpen className="w-5 h-5 text-[#111827]" />
+
+            {/* Right Staggered Column */}
+            <div className="lg:w-[55%] flex flex-col">
+              <h2 className="text-[40px] md:text-[52px] leading-[1.1] tracking-tight text-[#111827] mb-8" style={{ fontFamily: 'var(--font-serif)' }}>
+                Our Core : Accessibility,<br/>Inclusion, and Empowerment
+              </h2>
+              <p className="text-[15px] leading-[1.8] text-[#475569] font-light max-w-[500px] mb-24">
+                SkillAble was built from the ground up to redefine the modern hiring process. We believe that true talent knows no physical boundaries, and our underlying architecture reflects that commitment in every feature we deploy.
+              </p>
+
+              <div className="flex gap-16 items-start">
+                <div className="w-[45%]">
+                  <div className="aspect-square overflow-hidden mb-6">
+                    <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=500&q=80" alt="Accessibility First" className="w-full h-full object-cover grayscale opacity-90" />
+                  </div>
+                  <h3 className="text-[18px] font-bold text-[#111827] mb-2">Accessibility First</h3>
+                  <p className="text-[13px] text-[#475569] font-light">Deep integration with screen readers, voice controls, and keyboard navigation systems.</p>
+                </div>
+
+                <div className="w-[50%] mt-32">
+                  <h3 className="text-[18px] font-bold text-[#111827] mb-2">Inclusive Hiring</h3>
+                  <p className="text-[13px] text-[#475569] font-light mb-6">We only partner with vetted employers who celebrate diversity and foster inclusive workplaces.</p>
+                  <div className="aspect-[3/4] overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=500&q=80" alt="Inclusive Hiring" className="w-full h-full object-cover grayscale" />
+                  </div>
+                </div>
               </div>
-              <h3 className="text-xl font-bold text-[#111827] mb-3">Learn At Your Pace</h3>
-              <p className="text-[#475569] text-sm leading-relaxed">Accessible courses designed for everyone.</p>
-            </div>
-            <div className="bg-white border border-[#E5E7EB] rounded-[28px] p-8 shadow-[0_2px_10px_rgba(0,0,0,0.02)] flex flex-col h-full">
-              <div className="w-12 h-12 bg-[#FAFAF8] rounded-2xl flex items-center justify-center border border-[#E5E7EB] mb-8">
-                <UserCheck className="w-5 h-5 text-[#111827]" />
-              </div>
-              <h3 className="text-xl font-bold text-[#111827] mb-3">Connect With Mentors</h3>
-              <p className="text-[#475569] text-sm leading-relaxed">Industry experts and supportive communities.</p>
-            </div>
-            <div className="bg-white border border-[#E5E7EB] rounded-[28px] p-8 shadow-[0_2px_10px_rgba(0,0,0,0.02)] flex flex-col h-full">
-              <div className="w-12 h-12 bg-[#FAFAF8] rounded-2xl flex items-center justify-center border border-[#E5E7EB] mb-8">
-                <Briefcase className="w-5 h-5 text-[#111827]" />
-              </div>
-              <h3 className="text-xl font-bold text-[#111827] mb-3">Get Opportunities</h3>
-              <p className="text-[#475569] text-sm leading-relaxed">Find jobs, internships, and projects.</p>
             </div>
           </div>
         </section>
 
-        {/* FEATURES SECTION */}
-        <section id="features" className="max-w-7xl mx-auto px-6 sm:px-12 mt-40 space-y-32">
-          {/* Feature 1 */}
-          <div className="grid md:grid-cols-2 gap-16 items-center">
-            <div className="order-2 md:order-1 bg-white border border-[#E5E7EB] rounded-[32px] p-8 aspect-square flex items-center justify-center shadow-[0_2px_10px_rgba(0,0,0,0.02)]">
-              <div className="relative w-full h-full bg-[#FAFAF8] rounded-[20px] overflow-hidden border border-[#E5E7EB] flex items-center justify-center">
-                 <div className="absolute inset-x-8 top-12 h-14 bg-white rounded-xl border border-[#E5E7EB] shadow-sm flex items-center px-4 gap-4">
-                   <div className="w-8 h-8 bg-[#F8FAFC] rounded-full border border-[#E5E7EB] flex items-center justify-center">
-                     <Target className="w-4 h-4 text-[#475569]"/>
-                   </div>
-                   <div className="flex-1 h-3 bg-[#E5E7EB] rounded-full" />
-                 </div>
-                 <div className="absolute inset-x-8 top-32 h-32 bg-white rounded-xl border border-[#E5E7EB] shadow-sm p-6 space-y-4">
-                   <div className="w-3/4 h-3 bg-[#E5E7EB] rounded-full" />
-                   <div className="w-1/2 h-3 bg-[#E5E7EB] rounded-full" />
-                   <div className="w-full h-3 bg-[#E5E7EB] rounded-full mt-6" />
-                 </div>
+        {/* IMPACT SECTION */}
+        <section>
+          <SectionDivider number="04" title="Impact" />
+
+          <div className="flex flex-col lg:flex-row gap-16 lg:gap-24">
+            
+            {/* Left Image Column */}
+            <div className="lg:w-[45%]">
+              <h2 className="text-[40px] md:text-[52px] leading-[1.1] tracking-tight text-[#111827] mb-12" style={{ fontFamily: 'var(--font-serif)' }}>
+                Redefining the Hiring<br/>Process, One<br/>Match at a Time
+              </h2>
+              <div className="relative aspect-[4/5] w-full overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=800&q=80" alt="Success" className="w-full h-full object-cover grayscale opacity-90" />
+                {/* Dark Gradient Overlay at bottom */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-10">
+                  <span className="text-white text-[80px] font-bold leading-none mb-2 font-serif">100%</span>
+                  <p className="text-white/80 text-[14px] font-light max-w-[200px]">Commitment to WCAG accessibility standards across all features.</p>
+                </div>
               </div>
             </div>
-            <div className="order-1 md:order-2 space-y-6">
-              <h3 className="text-3xl md:text-4xl font-bold text-[#111827] tracking-tight">AI-assisted Skill Matching</h3>
-              <p className="text-lg text-[#475569] leading-relaxed">
-                Our personalized recommendations align your unique abilities with the right courses and career paths, completely redefining the discovery process.
-              </p>
-            </div>
-          </div>
 
-          {/* Feature 2 */}
-          <div className="grid md:grid-cols-2 gap-16 items-center">
-            <div className="space-y-6">
-              <h3 className="text-3xl md:text-4xl font-bold text-[#111827] tracking-tight">Fully Accessible Learning</h3>
-              <p className="text-lg text-[#475569] leading-relaxed">
-                Built from the ground up to be screen-reader friendly, fully keyboard navigable, and perfectly optimized for high contrast and adjustable text sizes.
+            {/* Right List Column */}
+            <div className="lg:w-[55%] flex flex-col pt-4">
+              <p className="text-[15px] leading-[1.8] text-[#475569] font-light mb-16">
+                We take pride in the positive impact we're building. Instead of focusing on vanity metrics, we focus entirely on the features that guarantee an inclusive experience for every user on our platform.
               </p>
-            </div>
-            <div className="bg-white border border-[#E5E7EB] rounded-[32px] p-8 aspect-square flex items-center justify-center shadow-[0_2px_10px_rgba(0,0,0,0.02)]">
-              <div className="relative w-full h-full bg-[#FAFAF8] rounded-[20px] overflow-hidden border border-[#E5E7EB] flex flex-col items-center justify-center gap-6 p-8">
-                 <div className="flex w-full justify-between items-center bg-white p-5 rounded-xl border border-[#E5E7EB] shadow-sm">
-                   <span className="text-[#111827] font-medium">Keyboard Navigation</span>
-                   <div className="w-12 h-6 bg-[#16A34A] rounded-full flex items-center px-1 justify-end"><div className="w-4 h-4 bg-white rounded-full"/></div>
-                 </div>
-                 <div className="flex w-full justify-between items-center bg-white p-5 rounded-xl border border-[#E5E7EB] shadow-sm">
-                   <span className="text-[#111827] font-medium">Screen Reader</span>
-                   <div className="w-12 h-6 bg-[#16A34A] rounded-full flex items-center px-1 justify-end"><div className="w-4 h-4 bg-white rounded-full"/></div>
-                 </div>
-                 <div className="flex w-full justify-between items-center bg-white p-5 rounded-xl border border-[#E5E7EB] shadow-sm">
-                   <span className="text-[#111827] font-medium">High Contrast</span>
-                   <div className="w-12 h-6 bg-[#E5E7EB] rounded-full flex items-center px-1 justify-start"><div className="w-4 h-4 bg-white rounded-full"/></div>
-                 </div>
-              </div>
-            </div>
-          </div>
 
-          {/* Feature 3 */}
-          <div className="grid md:grid-cols-2 gap-16 items-center">
-            <div className="order-2 md:order-1 bg-white border border-[#E5E7EB] rounded-[32px] p-8 aspect-square flex items-center justify-center shadow-[0_2px_10px_rgba(0,0,0,0.02)]">
-              <div className="w-full h-full bg-[#FAFAF8] rounded-[20px] border border-[#E5E7EB] p-8 grid grid-cols-2 gap-6">
-                {[1,2,3,4].map(i => (
-                  <div key={i} className="bg-white rounded-xl border border-[#E5E7EB] shadow-sm p-6 flex flex-col items-center justify-center gap-4">
-                    <div className="w-12 h-12 bg-[#F8FAFC] rounded-full border border-[#E5E7EB]" />
-                    <div className="w-16 h-2 bg-[#E5E7EB] rounded-full" />
+              <div className="w-full">
+                <div className="flex justify-between items-end border-b border-[#111827] pb-4 mb-2">
+                  <h3 className="text-[20px] font-bold text-[#111827]">Platform Capabilities</h3>
+                  <span className="text-[12px] font-bold uppercase tracking-widest text-[#111827]">Discover Tools</span>
+                </div>
+                
+                {/* List Items */}
+                {[
+                  { stat: "Integrated Voice Navigation", detail: "For Blind Users" },
+                  { stat: "Live Sign Language Support", detail: "In Interview Rooms" },
+                  { stat: "AI Smart Resume Scoring", detail: "Algorithm Powered" },
+                  { stat: "Verified Inclusive Partners", detail: "Employer Network" },
+                  { stat: "High-Contrast UI Overrides", detail: "Accessibility Settings" }
+                ].map((item, i) => (
+                  <div key={i} className="flex justify-between items-center py-6 border-b border-[#E5E7EB] group">
+                    <span className="text-[18px] text-[#111827] group-hover:pl-2 transition-all duration-300">{item.stat}</span>
+                    <div className="flex items-center gap-12 text-[#475569] text-[13px] font-light">
+                      <span>{item.detail}</span>
+                      <span className="uppercase tracking-widest text-[10px] font-bold hidden sm:block border-b border-[#475569]">Learn More</span>
+                    </div>
                   </div>
                 ))}
               </div>
             </div>
-            <div className="order-1 md:order-2 space-y-6">
-              <h3 className="text-3xl md:text-4xl font-bold text-[#111827] tracking-tight">Inclusive Job Board</h3>
-              <p className="text-lg text-[#475569] leading-relaxed">
-                Connect exclusively with employers who are deeply committed to diversity, equity, and providing the necessary accommodations for your success.
-              </p>
-            </div>
-          </div>
-        </section>
 
-        {/* ACCESSIBILITY SECTION (Primary Focus) */}
-        <section id="accessibility" className="max-w-7xl mx-auto px-6 sm:px-12 mt-40">
-          <div className="bg-[#F8FAFC] rounded-[40px] p-12 lg:p-24 border border-[#E5E7EB]">
-            <div className="text-center mb-16 max-w-2xl mx-auto">
-              <h2 className="text-3xl md:text-4xl font-bold text-[#111827] tracking-tight mb-6">Accessibility First</h2>
-              <p className="text-lg text-[#475569] leading-relaxed">This is the heart of SkillAble. We've built every interaction with inclusion in mind from day one.</p>
-            </div>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {[
-                { icon: Monitor, label: 'Screen Reader Support', desc: 'Semantic HTML and clear aria-labels.' },
-                { icon: Keyboard, label: 'Keyboard Navigation', desc: 'Seamless tabbing and focus rings.' },
-                { icon: Type, label: 'Adjustable Font Size', desc: 'Scale text without breaking layouts.' },
-                { icon: Eye, label: 'High Contrast Mode', desc: 'WCAG AAA compliant visual modes.' },
-                { icon: Captions, label: 'Captioned Videos', desc: 'Transcripts and closed captions.' },
-                { icon: Palette, label: 'Colorblind-Friendly', desc: 'Distinct shapes and patterns.' },
-              ].map((acc, i) => (
-                <div key={i} className="bg-white rounded-[24px] p-8 border border-[#E5E7EB] shadow-[0_2px_10px_rgba(0,0,0,0.02)]">
-                  <div className="w-12 h-12 rounded-xl bg-[#FAFAF8] border border-[#E5E7EB] flex items-center justify-center mb-6">
-                    <acc.icon className="w-5 h-5 text-[#111827]" />
-                  </div>
-                  <h4 className="font-semibold text-[#111827] mb-2">{acc.label}</h4>
-                  <p className="text-sm text-[#475569]">{acc.desc}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* SUCCESS STORIES */}
-        <section id="stories" className="max-w-7xl mx-auto px-6 sm:px-12 mt-40">
-          <div className="mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-[#111827] tracking-tight mb-4">Success Stories</h2>
-            <p className="text-lg text-[#475569]">Real impact on real careers.</p>
-          </div>
-          
-          <div className="grid lg:grid-cols-3 gap-8">
-            {[
-              {
-                quote: "Applied to five jobs, got two interviews, and secured a job quickly. The accessibility features made all the difference.",
-                name: "Michael Chen",
-                role: "Product Designer",
-                company: "Tech Solutions",
-                img: "https://i.pravatar.cc/150?u=michael"
-              },
-              {
-                quote: "The screen reader compatibility is flawless. Navigating and applying to jobs has never been this seamless for me.",
-                name: "Sarah Jenkins",
-                role: "Data Analyst",
-                company: "DataCorp",
-                img: "https://i.pravatar.cc/150?u=sarah"
-              },
-              {
-                quote: "SkillAble didn't just find me a job; it gave me the independence to excel in interviews using the live sign language to text feature.",
-                name: "Priya Nair",
-                role: "Software Engineer",
-                company: "Innovate Inc",
-                img: "https://i.pravatar.cc/150?u=priya"
-              }
-            ].map((story, i) => (
-              <div key={i} className="bg-white border border-[#E5E7EB] rounded-[28px] p-10 shadow-[0_2px_10px_rgba(0,0,0,0.02)] flex flex-col">
-                <div className="flex gap-1 text-[#111827] mb-8">
-                  {[1,2,3,4,5].map(star => <StarIcon key={star} className="w-4 h-4 fill-current" />)}
-                </div>
-                <p className="text-[#111827] font-medium leading-relaxed text-lg mb-12 flex-1">
-                  "{story.quote}"
-                </p>
-                <div className="flex items-center gap-4 pt-6 border-t border-[#E5E7EB]">
-                  <img src={story.img} alt={story.name} className="w-12 h-12 rounded-full object-cover" />
-                  <div>
-                    <div className="font-semibold text-[#111827]">{story.name}</div>
-                    <div className="text-sm text-[#475569]">{story.role} at {story.company}</div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* FAQ SECTION */}
-        <section id="faq" className="max-w-3xl mx-auto px-6 sm:px-12 mt-40">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-[#111827] tracking-tight">Frequently asked questions</h2>
-          </div>
-          <div className="space-y-4">
-            {[
-              { q: "Is SkillAble completely free for job seekers?", a: "Yes, SkillAble is 100% free for differently abled individuals seeking courses, mentorship, and employment." },
-              { q: "How do I request specific accommodations for an interview?", a: "Your profile contains an accessibility preferences section that is securely shared with employers when you schedule an interview." },
-              { q: "Are all employers on the platform vetted?", a: "Absolutely. We verify every employer's commitment to diversity and inclusive workplace practices before they can post jobs." },
-              { q: "Can I use my own screen reader?", a: "Yes, our platform is built with strict semantic HTML to perfectly support native screen readers like NVDA, JAWS, and VoiceOver." },
-            ].map((faq, i) => (
-              <details key={i} className="group bg-white border border-[#E5E7EB] rounded-[20px] [&_summary::-webkit-details-marker]:hidden shadow-[0_2px_10px_rgba(0,0,0,0.01)]">
-                <summary className="flex cursor-pointer items-center justify-between gap-1.5 p-6 font-medium text-[#111827]">
-                  {faq.q}
-                  <ChevronDown className="w-5 h-5 text-[#475569] transition duration-300 group-open:-rotate-180" />
-                </summary>
-                <div className="px-6 pb-6 text-[#475569] leading-relaxed border-t border-[#E5E7EB] pt-4 mt-2 hidden group-open:block">
-                  {faq.a}
-                </div>
-              </details>
-            ))}
-          </div>
-        </section>
-
-        {/* FINAL CTA */}
-        <section className="max-w-7xl mx-auto px-6 sm:px-12 mt-40">
-          <div className="bg-[#1E293B] rounded-[40px] p-12 lg:p-24 text-center border border-[#E5E7EB]">
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white tracking-tight mb-8">
-              Ready to unlock your potential?
-            </h2>
-            <div className="flex flex-col sm:flex-row justify-center gap-4">
-              <Link to="/signup">
-                <button className="w-full sm:w-auto bg-white text-[#111827] px-8 py-3.5 rounded-full text-base font-medium hover:bg-gray-100 transition-colors">
-                  Join SkillAble
-                </button>
-              </Link>
-              <button className="w-full sm:w-auto bg-transparent border border-white/20 text-white px-8 py-3.5 rounded-full text-base font-medium hover:bg-white/10 transition-colors">
-                Book a Demo
-              </button>
-            </div>
           </div>
         </section>
 
       </main>
 
-      <LandingFooter />
+      {/* --------------------------------------------------------------------------
+          EDITORIAL FOOTER
+          -------------------------------------------------------------------------- */}
+      <footer className="max-w-[1280px] mx-auto px-6 lg:px-12 mt-32">
+        <SectionDivider number="05" title="Connect" />
+        
+        <div className="flex flex-col md:flex-row justify-between items-start gap-12 mb-24">
+          <h2 className="text-[40px] leading-[1.1] text-[#111827]" style={{ fontFamily: 'var(--font-serif)' }}>
+            Start your career<br/>journey with us.
+          </h2>
+          <div className="flex gap-16">
+            <div className="flex flex-col gap-4">
+              <span className="text-[11px] font-bold uppercase tracking-widest text-[#111827] mb-2">Social</span>
+              <a href="#" style={{ color: '#475569', textDecoration: 'none' }} className="text-[14px] font-light hover:text-[#111827]">Instagram</a>
+              <a href="#" style={{ color: '#475569', textDecoration: 'none' }} className="text-[14px] font-light hover:text-[#111827]">LinkedIn</a>
+              <a href="#" style={{ color: '#475569', textDecoration: 'none' }} className="text-[14px] font-light hover:text-[#111827]">Twitter</a>
+            </div>
+            <div className="flex flex-col gap-4">
+              <span className="text-[11px] font-bold uppercase tracking-widest text-[#111827] mb-2">Contact</span>
+              <a href="#" style={{ color: '#475569', textDecoration: 'none' }} className="text-[14px] font-light hover:text-[#111827]">hello@skillable.com</a>
+              <a href="#" style={{ color: '#475569', textDecoration: 'none' }} className="text-[14px] font-light hover:text-[#111827]">+1 (555) 000-0000</a>
+            </div>
+          </div>
+        </div>
+      </footer>
+      
     </div>
-  )
-}
-
-function StarIcon({ className }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-    </svg>
   )
 }
