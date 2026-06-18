@@ -1,0 +1,60 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: skillable
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  django:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: daphne -b 0.0.0.0 -p 8000 skillable.asgi:application
+    environment:
+      DEBUG: "True"
+      DB_HOST: db
+      DB_NAME: skillable
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      REDIS_HOST: redis
+      AI_RESUME_URL: http://resume-service:8001
+      AI_MATCHING_URL: http://matching-service:8002
+      AI_SIGN_LANG_URL: http://sign-service:8003
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+      - mediafiles:/app/media
+    depends_on:
+      - db
+      - redis
+
+  resume-service:
+    build:
+      context: ./ai_services/resume_service
+    command: uvicorn main:app --host 0.0.0.0 --port 8001
+    ports:
+      - "8001:8001"
+
+  sign-service:
+    build:
+      context: ./ai_services/sign_language_service
+    command: uvicorn main:app --host 0.0.0.0 --port 8003
+    ports:
+      - "8003:8003"
+
+volumes:
+  pgdata:
+  mediafiles:
