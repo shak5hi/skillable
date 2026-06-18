@@ -386,7 +386,7 @@ export function VoiceNavigationButton() {
             initial={{ opacity: 0, y: 10, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, scale: 0.9 }}
-            className="bg-gray-900 border border-gray-700 text-white px-4 py-3 rounded-2xl shadow-2xl pointer-events-auto max-w-xs"
+            className="bg-white border border-[#E5E7EB] text-[#111827] px-4 py-3 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.08)] pointer-events-auto max-w-xs"
             role="status"
             aria-live="polite"
           >
@@ -398,15 +398,15 @@ export function VoiceNavigationButton() {
             )}
             {isProcessing && (
               <p className="text-sm font-sans flex items-center gap-2">
-                <Loader2 className="w-4 h-4 animate-spin text-teal-400 shrink-0" />
+                <Loader2 className="w-4 h-4 animate-spin text-[#111827] shrink-0" />
                 Processing command…
               </p>
             )}
             {transcript && !isProcessing && (
-              <p className="text-xs font-sans text-gray-300 mt-1 italic">"{transcript}"</p>
+              <p className="text-xs font-sans text-[#475569] mt-1 italic">"{transcript}"</p>
             )}
             {statusMsg && !isProcessing && (
-              <p className="text-xs font-sans text-teal-300 mt-1">{statusMsg}</p>
+              <p className="text-xs font-sans font-medium text-[#111827] mt-1">{statusMsg}</p>
             )}
           </motion.div>
         )}
@@ -429,9 +429,9 @@ export function VoiceNavigationButton() {
             </div>
             <ul className="space-y-2 max-h-64 overflow-y-auto">
               {history.map(item => (
-                <li key={item.id} className="text-xs font-sans p-2 bg-gray-50 rounded-lg">
-                  <p className="text-gray-800 font-medium truncate">"{item.cmd}"</p>
-                  <p className="text-teal-600 truncate mt-0.5 capitalize">
+                <li key={item.id} className="text-xs font-sans p-2 bg-[#FAFAF8] rounded-lg border border-[#E5E7EB]">
+                  <p className="text-[#111827] font-medium truncate">"{item.cmd}"</p>
+                  <p className="text-[#475569] truncate mt-0.5 capitalize font-semibold tracking-wide text-[10px]">
                     {item.action?.replace(/_/g, ' ')} {item.route ? `→ ${item.route}` : ''}
                   </p>
                 </li>
@@ -448,7 +448,7 @@ export function VoiceNavigationButton() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="bg-teal-900 border border-teal-600 text-teal-100 text-xs px-3 py-2 rounded-xl max-w-[220px] pointer-events-none text-center font-sans"
+            className="bg-[#111827] border border-[#111827] text-white shadow-xl text-[11px] px-4 py-3 rounded-2xl max-w-[220px] pointer-events-none text-center font-sans tracking-wide leading-relaxed"
           >
             Say: "search Python jobs" · "read aloud" · "show remote jobs" · "apply for Designer"
           </motion.div>
@@ -471,11 +471,11 @@ export function VoiceNavigationButton() {
         {/* Read aloud quick button */}
         <button
           onClick={readPageAloud}
-          className="w-12 h-12 bg-white rounded-full flex items-center justify-center text-gray-500 shadow-lg border border-gray-200 hover:bg-gray-50 transition-colors"
+          className="w-12 h-12 bg-white rounded-full flex items-center justify-center text-gray-500 shadow-lg border border-[#E5E7EB] hover:bg-[#FAFAF8] transition-colors"
           aria-label="Read page aloud"
           title="Read page aloud"
         >
-          <Volume2 className="w-5 h-5 text-teal-600" />
+          <Volume2 className="w-5 h-5 text-[#111827]" />
         </button>
 
         {/* Main mic button */}
@@ -484,12 +484,12 @@ export function VoiceNavigationButton() {
             if (isListeningRef.current) stopListening()
             else startListening()
           }}
-          className={`w-16 h-16 rounded-full flex items-center justify-center text-white shadow-xl transition-all border-2 relative ${
+          className={`w-16 h-16 rounded-full flex items-center justify-center shadow-xl transition-all relative border border-[#E5E7EB] ${
             isVoiceAssistantActive
-              ? 'bg-green-500 border-green-300 scale-110'
+              ? 'bg-[#111827] text-white border-[#111827] scale-105'
               : isListening
-              ? 'bg-red-500 border-red-300'
-              : 'bg-teal-600 border-teal-400 hover:bg-teal-700'
+              ? 'bg-red-500 text-white border-red-500'
+              : 'bg-white text-[#111827] hover:border-[#111827]'
           }`}
           aria-label={
             isVoiceAssistantActive

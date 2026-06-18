@@ -6,27 +6,27 @@ body {
 }
 
 @theme {
-  --color-primary: #0F6E56;
-  --color-primary-light: #12876a;
-  --color-primary-dark: #0a4f3e;
+  --color-primary: #111827;
+  --color-primary-light: #475569;
+  --color-primary-dark: #000000;
   
-  --color-background: #FAF8F4;
-  --color-foreground: #1C1C1E;
+  --color-background: #FAFAF8;
+  --color-foreground: #111827;
   
-  --color-accent: #F59E0B;
-  --color-accent-hover: #d98c0a;
+  --color-accent: #111827;
+  --color-accent-hover: #475569;
   
-  --color-coral: #F0997B;
-  --color-coral-light: #f6c0af;
+  --color-coral: #E5E7EB;
+  --color-coral-light: #F8FAFC;
 
   --color-surface: #FFFFFF;
-  --color-surface-hover: #F3F0EB;
+  --color-surface-hover: #F8FAFC;
   
-  --color-border: #E5E0D5;
-  --color-border-focus: #0F6E56;
+  --color-border: #E5E7EB;
+  --color-border-focus: #111827;
 
-  --font-serif: 'Fraunces', serif;
-  --font-sans: 'DM Sans', sans-serif;
+  --font-serif: 'Playfair Display', 'Cormorant Garamond', serif;
+  --font-sans: 'Inter', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
   
   --radius-xl: 1rem;
@@ -49,6 +49,7 @@ body {
 
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-serif);
+    color: var(--color-primary);
   }
 
   code, pre {
@@ -57,19 +58,19 @@ body {
 
   /* Ensure focus is always visible for keyboard / voice nav users */
   :focus-visible {
-    outline: 3px solid var(--color-primary);
-    outline-offset: 3px;
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
     border-radius: 4px;
   }
 }
 
 @layer utilities {
   .focus-ring {
-    @apply focus:outline-none focus-visible:ring-4 focus-visible:ring-[var(--color-primary)]/40 focus-visible:border-[var(--color-primary)] transition-all duration-200;
+    @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-[#111827] focus-visible:border-[#111827] transition-all duration-200;
   }
   
   .glass-panel {
-    @apply bg-white/80 backdrop-blur-md border border-white/20 shadow-sm;
+    @apply bg-white/95 backdrop-blur-sm border border-[#E5E7EB];
   }
 
   /* Screen-reader only — visually hidden but accessible */
@@ -92,16 +93,16 @@ body {
    Overrides CSS variables to meet WCAG AAA contrast ratio (≥ 7:1).
 ───────────────────────────────────────────────────────────────────────────── */
 html.high-contrast {
-  --color-primary:      #004d38;
-  --color-primary-light:#006649;
-  --color-primary-dark: #002e21;
+  --color-primary:      #000000;
+  --color-primary-light:#111111;
+  --color-primary-dark: #000000;
   --color-background:   #ffffff;
   --color-foreground:   #000000;
   --color-surface:      #ffffff;
   --color-surface-hover:#f0f0f0;
   --color-border:       #000000;
-  --color-accent:       #7a4e00;
-  --color-coral:        #8b1a00;
+  --color-accent:       #000000;
+  --color-coral:        #000000;
 }
 
 html.high-contrast body {
@@ -110,8 +111,9 @@ html.high-contrast body {
 }
 
 html.high-contrast a {
-  color: #004d38;
+  color: #000000;
   text-decoration: underline;
+  font-weight: bold;
 }
 
 html.high-contrast button,
@@ -130,17 +132,17 @@ html.high-contrast textarea {
 html.high-contrast .bg-gray-800,
 html.high-contrast .bg-gray-900,
 html.high-contrast .bg-gray-950 {
-  background-color: #111111 !important;
+  background-color: #000000 !important;
 }
 
 html.high-contrast .text-gray-400,
 html.high-contrast .text-gray-500,
 html.high-contrast .text-gray-600 {
-  color: #333333 !important;
+  color: #222222 !important;
 }
 
 /* ── Interview room high-contrast overrides ── */
-html.high-contrast .border-teal-500 { border-color: #004d38 !important; }
-html.high-contrast .border-blue-700 { border-color: #00008b !important; }
-html.high-contrast .text-teal-300   { color: #004d38 !important; }
-html.high-contrast .text-blue-200   { color: #000080 !important; }
+html.high-contrast .border-teal-500 { border-color: #000000 !important; }
+html.high-contrast .border-blue-700 { border-color: #000000 !important; }
+html.high-contrast .text-teal-300   { color: #000000 !important; }
+html.high-contrast .text-blue-200   { color: #000000 !important; }

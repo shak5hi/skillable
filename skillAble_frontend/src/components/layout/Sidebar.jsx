@@ -32,9 +32,9 @@ export function Sidebar({ role = 'JOB_SEEKER' }) {
 
   return (
     <aside className="w-64 bg-white border-r border-[var(--color-border)] h-screen sticky top-0 flex flex-col pt-6 pb-4 shrink-0 overflow-y-auto">
-      <div className="px-6 mb-8">
-        <Link to="/" className="text-2xl font-serif text-[var(--color-primary)] font-bold focus-ring rounded-md inline-block">
-          SkillAble
+      <div className="px-8 mb-12">
+        <Link to="/" className="text-[22px] tracking-tight text-[var(--color-primary)] font-bold focus-ring inline-block" style={{ fontFamily: 'var(--font-serif)' }}>
+          SkillAble.
         </Link>
       </div>
 
@@ -46,26 +46,26 @@ export function Sidebar({ role = 'JOB_SEEKER' }) {
               key={link.path}
               to={link.path}
               className={cn(
-                "flex items-center gap-3 px-4 py-3 rounded-xl font-sans font-medium transition-all focus-ring",
+                "flex items-center gap-4 px-8 py-3.5 font-sans transition-all focus-ring text-[13px] uppercase tracking-widest font-bold",
                 isActive 
-                  ? "bg-teal-50 text-[var(--color-primary)] shadow-sm"
-                  : "text-gray-600 hover:bg-[var(--color-surface-hover)] hover:text-gray-900"
+                  ? "border-r-2 border-[#111827] text-[#111827]"
+                  : "text-[#475569] hover:text-[#111827]"
               )}
               aria-current={isActive ? "page" : undefined}
             >
-              <link.icon className={cn("w-5 h-5", isActive ? "text-[var(--color-primary)]" : "text-gray-400")} />
+              <link.icon className={cn("w-[18px] h-[18px]", isActive ? "text-[#111827]" : "text-[#475569]")} strokeWidth={isActive ? 2.5 : 1.5} />
               {link.label}
             </Link>
           )
         })}
       </nav>
 
-      <div className="px-4 mt-6 pt-6 border-t border-[var(--color-border)]">
+      <div className="px-8 mt-12 pt-8 border-t border-[var(--color-border)]">
         <button
           onClick={logout}
-          className="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-sans font-medium text-gray-600 hover:bg-red-50 hover:text-red-700 transition-all focus-ring"
+          className="w-full flex items-center gap-4 py-2 font-sans text-[12px] uppercase tracking-widest font-bold text-[#475569] hover:text-[#111827] transition-all focus-ring"
         >
-          <LogOut className="w-5 h-5 text-gray-400 group-hover:text-red-500" />
+          <LogOut className="w-[18px] h-[18px] text-[#475569] group-hover:text-[#111827]" strokeWidth={1.5} />
           Logout
         </button>
       </div>

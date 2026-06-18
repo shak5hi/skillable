@@ -1,9 +1,10 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import { SectionDivider } from '../components/common/SectionDivider'
 
 // Minimalist icons
 const PlayIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
     <circle cx="12" cy="12" r="10"></circle>
     <polygon points="10 8 16 12 10 16 10 8"></polygon>
   </svg>
@@ -15,34 +16,41 @@ const AppleIcon = () => (
   </svg>
 )
 
-// Reusable editorial section divider
-const SectionDivider = ({ number, title }) => (
-  <div className="w-full flex items-center gap-6 mb-16 lg:mb-24">
-    <div className="flex gap-2 items-center text-[11px] uppercase tracking-widest text-[#475569] whitespace-nowrap">
-      <span className="font-semibold">{number}</span>
-      <span>{title}</span>
-    </div>
-    <div className="h-[1px] bg-[#E5E7EB] flex-1"></div>
-    <span className="text-[11px] uppercase tracking-widest text-[#111827] font-semibold whitespace-nowrap">skillable.com</span>
-    <div className="h-[1px] bg-[#E5E7EB] flex-1"></div>
-    <span className="text-[11px] text-[#475569] whitespace-nowrap">©{new Date().getFullYear()}</span>
-  </div>
-)
-
 export default function Landing() {
+  const [activeSection, setActiveSection] = useState('01 Overview')
+
+  useEffect(() => {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          if (entry.target.id === 'overview') setActiveSection('01 Overview')
+          if (entry.target.id === 'platform-focus') setActiveSection('02 Platform Focus')
+          if (entry.target.id === 'mission') setActiveSection('03 Our Mission')
+          if (entry.target.id === 'impact') setActiveSection('04 Impact')
+          if (entry.target.id === 'connect') setActiveSection('05 Connect')
+        }
+      })
+    }, { threshold: 0.3 })
+
+    document.querySelectorAll('section, footer').forEach(section => observer.observe(section))
+    return () => observer.disconnect()
+  }, [])
+
   return (
-    // Isolation wrapper: Forces styles to override any global app styles (like high contrast green links)
+    // Isolation wrapper: Forces styles to override any global app styles
     <div 
       className="min-h-screen bg-[#FFFFFF] text-[#111827] selection:bg-[#4F7DFF] selection:text-white pb-32" 
       style={{ fontFamily: '"Inter", sans-serif' }}
     >
       
       {/* --------------------------------------------------------------------------
-          HEADER (Editorial Minimalist)
+          HEADER (Editorial Minimalist with Scroll Spy)
           -------------------------------------------------------------------------- */}
-      <header className="fixed top-0 left-0 w-full z-50 py-5 px-6 lg:px-12 flex items-center justify-between bg-white/95 backdrop-blur-sm border-b border-[#E5E7EB]">
+      <header className="fixed top-0 left-0 w-full z-50 py-5 px-6 lg:px-12 flex items-center justify-between bg-white/95 backdrop-blur-sm border-b border-[#E5E7EB] transition-all duration-300">
         <div className="flex-1 hidden md:flex items-center gap-8">
-          <span className="text-[10px] uppercase tracking-[0.2em] text-[#475569] font-semibold">01 Overview</span>
+          <span className="text-[10px] uppercase tracking-[0.2em] text-[#475569] font-bold transition-all duration-500">
+            {activeSection}
+          </span>
         </div>
         <div className="flex-1 flex justify-start md:justify-center">
           <Link to="/" style={{ color: '#111827', textDecoration: 'none' }} className="text-[28px] font-bold tracking-tight">
@@ -50,26 +58,26 @@ export default function Landing() {
           </Link>
         </div>
         <div className="flex-1 flex justify-end gap-6 items-center">
-          <Link to="/login" style={{ color: '#111827', textDecoration: 'none' }} className="text-[13px] font-semibold tracking-wide uppercase hover:opacity-50 transition-opacity hidden sm:block">
+          <Link to="/login" style={{ color: '#111827', textDecoration: 'none' }} className="text-[11px] font-bold tracking-widest uppercase hover:opacity-50 transition-opacity hidden sm:block">
             Log In
           </Link>
-          <Link to="/signup" style={{ background: '#1E293B', color: '#FFFFFF', textDecoration: 'none', border: 'none' }} className="px-6 py-2.5 rounded-full text-[13px] font-medium transition-transform hover:scale-105">
+          <Link to="/signup" style={{ background: '#111827', color: '#FFFFFF', textDecoration: 'none', border: 'none' }} className="px-6 py-2.5 text-[11px] font-bold tracking-widest uppercase transition-transform hover:scale-105 rounded-full">
             Get Started
           </Link>
         </div>
       </header>
 
       {/* --------------------------------------------------------------------------
-          HERO SECTION (Grup.co Layout, Fixed Bugs)
+          HERO SECTION
           -------------------------------------------------------------------------- */}
-      <section className="relative h-[100dvh] min-h-[600px] w-full max-w-[1440px] mx-auto px-6 lg:px-12 pt-[80px] pb-8 flex flex-col lg:flex-row items-center justify-between gap-8 overflow-hidden bg-[#FAFAF8]">
+      <section id="overview" className="relative h-[100dvh] min-h-[600px] w-full max-w-[1440px] mx-auto px-6 lg:px-12 pt-[80px] pb-8 flex flex-col lg:flex-row items-center justify-between gap-8 overflow-hidden bg-[#FAFAF8]">
         
         {/* Left Column */}
         <div className="w-full lg:w-[45%] z-10 flex flex-col justify-center h-full">
           <div className="flex items-center gap-4 mb-4 lg:mb-6">
-            <div className="w-2 h-2 rounded-full bg-[#111827]"></div>
-            <div className="w-12 h-[2px] bg-[#111827]"></div>
-            <span className="text-[#111827] font-semibold text-[12px] uppercase tracking-widest">Accessible learning platform</span>
+            <div className="w-2 h-2 bg-[#111827]"></div>
+            <div className="w-12 h-[1px] bg-[#111827]"></div>
+            <span className="text-[#111827] font-bold text-[10px] uppercase tracking-widest">Accessible learning platform</span>
           </div>
           
           <h1 className="text-[48px] sm:text-[56px] lg:text-[72px] xl:text-[80px] leading-[1.05] tracking-tight text-[#111827] mb-6" style={{ fontFamily: 'var(--font-serif)' }}>
@@ -78,26 +86,24 @@ export default function Landing() {
             Opportunities.
           </h1>
           
-          <p className="text-[16px] lg:text-[18px] text-[#475569] leading-[1.6] max-w-[480px] mb-8 lg:mb-12 font-light">
+          <p className="text-[16px] lg:text-[18px] text-[#475569] leading-[1.6] max-w-[480px] mb-10 font-light">
             SkillAble helps differently abled individuals discover skills, learn at their own pace, connect with mentors and unlock meaningful employment opportunities.
           </p>
           
-          <div className="flex items-center gap-6 lg:gap-8 mt-2">
+          <div className="flex flex-wrap items-center gap-6 mt-2">
             <Link 
               to="/signup" 
-              style={{ backgroundColor: '#111827', color: '#FFFFFF', textDecoration: 'none', border: 'none', outline: 'none' }} 
-              className="px-8 py-3.5 lg:py-4 rounded-full text-[14px] font-semibold tracking-wide transition-all hover:bg-[#4F7DFF] hover:scale-105 whitespace-nowrap"
+              style={{ textDecoration: 'none', outline: 'none' }} 
+              className="px-8 py-3.5 border border-[#111827] bg-transparent text-[#111827] hover:bg-[#111827] hover:text-white text-[12px] uppercase tracking-widest font-bold transition-all whitespace-nowrap rounded-full"
             >
               Get Started
             </Link>
             <button 
-              style={{ backgroundColor: 'transparent', color: '#475569', border: 'none', outline: 'none', textDecoration: 'none' }} 
-              className="flex items-center gap-2 font-medium text-[14px] hover:text-[#111827] transition-colors cursor-pointer"
+              style={{ backgroundColor: 'transparent', color: '#111827', border: 'none', outline: 'none', textDecoration: 'none' }} 
+              className="flex items-center gap-2 text-[12px] uppercase tracking-widest font-bold hover:opacity-50 transition-opacity cursor-pointer whitespace-nowrap"
             >
-              <div className="w-8 h-8 rounded-full border border-[#E5E7EB] flex items-center justify-center">
-                <PlayIcon />
-              </div>
-              <span className="border-b border-transparent hover:border-[#111827] pb-0.5">See How It Works</span>
+              <PlayIcon />
+              <span>How It Works</span>
             </button>
           </div>
         </div>
@@ -106,17 +112,17 @@ export default function Landing() {
         <div className="w-full lg:w-[50%] relative h-[50vh] lg:h-[85%] flex items-end justify-center">
           
           {/* Main Arch Shape */}
-          <div className="relative w-[80%] max-w-[420px] h-[95%] bg-[#4F7DFF] z-0 overflow-hidden" style={{ borderRadius: '300px 300px 20px 20px' }}>
+          <div className="relative w-[80%] max-w-[420px] h-[95%] bg-[#FAFAF8] z-0 overflow-hidden" style={{ borderRadius: '300px 300px 20px 20px' }}>
             <img 
               src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=800" 
               alt="Professional portrait" 
-              className="w-full h-full object-cover object-top mix-blend-multiply opacity-90 scale-[1.15] origin-top"
+              className="w-full h-full object-cover object-top scale-[1.15] origin-top"
             />
           </div>
 
           {/* Floating Card 1: Bottom Left */}
           <div className="absolute bottom-[5%] left-0 z-20 flex items-center">
-            <div className="bg-white rounded-[20px] p-6 shadow-[0_10px_40px_rgba(0,0,0,0.06)] w-[200px] lg:w-[220px] relative z-10 border border-[#E5E7EB]">
+            <div className="bg-white rounded-[24px] p-6 shadow-[0_10px_40px_rgba(0,0,0,0.06)] w-[200px] lg:w-[220px] relative z-10 border border-[#E5E7EB]">
               <h3 className="text-[13px] font-semibold text-[#111827] mb-1">Skill Matching</h3>
               <p className="text-[24px] font-bold text-[#111827] mb-1">98.5%</p>
               <p className="text-[10px] text-[#16A34A] font-medium mb-4">+12.5% Success</p>
@@ -141,10 +147,10 @@ export default function Landing() {
               <line x1="2" y1="8" x2="48" y2="8" stroke="#111827" strokeWidth="1.5" />
             </svg>
             <div className="flex flex-col items-start">
-              <div className="w-8 h-8 bg-[#111827] rounded-full flex items-center justify-center text-white mb-2 ml-4 shadow-md">
+              <div className="w-8 h-8 rounded-full bg-[#111827] flex items-center justify-center text-white mb-2 ml-4 shadow-md">
                 <AppleIcon />
               </div>
-              <div className="bg-[#4F7DFF] text-white rounded-[12px] px-4 py-2 shadow-lg text-[13px] font-semibold flex items-center gap-2 whitespace-nowrap">
+              <div className="bg-[#4F7DFF] rounded-full text-white px-5 py-2.5 shadow-lg text-[13px] font-semibold flex items-center gap-2 whitespace-nowrap">
                 Job Recommendations
               </div>
             </div>
@@ -162,7 +168,7 @@ export default function Landing() {
                   <img src="https://i.pravatar.cc/150?u=a1" alt="Mentor" className="w-full h-full object-cover" />
                 </div>
                 <div className="w-10 h-10 rounded-full border-2 border-white overflow-hidden z-0 bg-gray-100">
-                  <img src="https://i.pravatar.cc/150?u=a2" alt="Mentor" className="w-full h-full object-cover grayscale opacity-80" />
+                  <img src="https://i.pravatar.cc/150?u=a2" alt="Mentor" className="w-full h-full object-cover opacity-80" />
                 </div>
               </div>
               <span className="text-[13px] font-bold text-[#111827]">Mentor Support</span>
@@ -178,7 +184,7 @@ export default function Landing() {
       <main className="max-w-[1280px] mx-auto px-6 lg:px-12 mt-24 space-y-32">
 
         {/* FEATURES GRID SECTION */}
-        <section>
+        <section id="platform-focus">
           <SectionDivider number="02" title="Platform Focus" />
           
           <div className="flex flex-col lg:flex-row gap-12 lg:gap-24 mb-16">
@@ -203,7 +209,7 @@ export default function Landing() {
             ].map((item, i) => (
               <div key={i} className="group cursor-pointer">
                 <div className="w-full aspect-[4/3] overflow-hidden mb-6 bg-gray-100">
-                  <img src={item.img} alt={item.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 grayscale opacity-90" />
+                  <img src={item.img} alt={item.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                 </div>
                 <h3 className="text-[18px] font-bold text-[#111827] mb-3 leading-snug">{item.title}</h3>
                 <p className="text-[13px] text-[#475569] leading-relaxed font-light mb-6">
@@ -216,14 +222,14 @@ export default function Landing() {
         </section>
 
         {/* VALUES SECTION (Staggered Layout) */}
-        <section>
+        <section id="mission">
           <SectionDivider number="03" title="Our Mission" />
           
           <div className="flex flex-col lg:flex-row gap-16 lg:gap-24">
             {/* Left Staggered Column */}
             <div className="lg:w-[45%] flex flex-col items-start pt-12">
               <div className="w-[85%] aspect-[3/4] overflow-hidden mb-8">
-                <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=600&q=80" alt="Empowerment" className="w-full h-full object-cover grayscale" />
+                <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=600&q=80" alt="Empowerment" className="w-full h-full object-cover" />
               </div>
               <h3 className="text-[20px] font-bold text-[#111827] mb-3">Empowerment</h3>
               <p className="text-[14px] text-[#475569] font-light max-w-[280px]">Dedicated to giving you the tools, mentors, and opportunities to take full control of your career path.</p>
@@ -241,7 +247,7 @@ export default function Landing() {
               <div className="flex gap-16 items-start">
                 <div className="w-[45%]">
                   <div className="aspect-square overflow-hidden mb-6">
-                    <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=500&q=80" alt="Accessibility First" className="w-full h-full object-cover grayscale opacity-90" />
+                    <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=500&q=80" alt="Accessibility First" className="w-full h-full object-cover" />
                   </div>
                   <h3 className="text-[18px] font-bold text-[#111827] mb-2">Accessibility First</h3>
                   <p className="text-[13px] text-[#475569] font-light">Deep integration with screen readers, voice controls, and keyboard navigation systems.</p>
@@ -251,7 +257,7 @@ export default function Landing() {
                   <h3 className="text-[18px] font-bold text-[#111827] mb-2">Inclusive Hiring</h3>
                   <p className="text-[13px] text-[#475569] font-light mb-6">We only partner with vetted employers who celebrate diversity and foster inclusive workplaces.</p>
                   <div className="aspect-[3/4] overflow-hidden">
-                    <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=500&q=80" alt="Inclusive Hiring" className="w-full h-full object-cover grayscale" />
+                    <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=500&q=80" alt="Inclusive Hiring" className="w-full h-full object-cover" />
                   </div>
                 </div>
               </div>
@@ -260,7 +266,7 @@ export default function Landing() {
         </section>
 
         {/* IMPACT SECTION */}
-        <section>
+        <section id="impact">
           <SectionDivider number="04" title="Impact" />
 
           <div className="flex flex-col lg:flex-row gap-16 lg:gap-24">
@@ -271,7 +277,7 @@ export default function Landing() {
                 Redefining the Hiring<br/>Process, One<br/>Match at a Time
               </h2>
               <div className="relative aspect-[4/5] w-full overflow-hidden">
-                <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=800&q=80" alt="Success" className="w-full h-full object-cover grayscale opacity-90" />
+                <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=800&q=80" alt="Success" className="w-full h-full object-cover" />
                 {/* Dark Gradient Overlay at bottom */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-10">
                   <span className="text-white text-[80px] font-bold leading-none mb-2 font-serif">100%</span>
@@ -319,7 +325,7 @@ export default function Landing() {
       {/* --------------------------------------------------------------------------
           EDITORIAL FOOTER
           -------------------------------------------------------------------------- */}
-      <footer className="max-w-[1280px] mx-auto px-6 lg:px-12 mt-32">
+      <footer id="connect" className="max-w-[1280px] mx-auto px-6 lg:px-12 mt-32">
         <SectionDivider number="05" title="Connect" />
         
         <div className="flex flex-col md:flex-row justify-between items-start gap-12 mb-24">
