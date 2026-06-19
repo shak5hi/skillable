@@ -24,7 +24,7 @@ import api from '../../api/axios'
 
 export function VoiceNavigationButton() {
   const { settings, isVoiceAssistantActive, setVoiceAssistantActive } = useAccessibilityStore()
-  const { user } = useAuthStore()
+  const { user, logout } = useAuthStore()
   const navigate  = useNavigate()
   const location  = useLocation()
 
@@ -98,6 +98,51 @@ export function VoiceNavigationButton() {
   }, [speak, setStatus])
 
   // ─────────────────────────────────────────────────────────────────────────
+  // INTENT MATCHER (Robust Local Fallback & Fast Path)
+  // ─────────────────────────────────────────────────────────────────────────
+  function matchIntent(text) {
+    const t = text.toLowerCase().replace(/[.,?!]/g, '').trim()
+
+    // Ordered by PRIORITY (most specific to least specific)
+    const intents = [
+      { action: 'logout', route: null, keywords: ['log out', 'logout', 'log me out', 'sign out'] },
+      { action: 'apply_job', route: null, keywords: ['apply now', 'apply to this job', 'apply'] },
+      { action: 'navigate', route: '/employer/applications', keywords: ['view applicants', 'show applicants', 'my candidates'] },
+      { action: 'navigate', route: '/employer/jobs', keywords: ['my postings', 'my jobs', 'posted jobs'] },
+      { action: 'navigate', route: '/notifications', keywords: ['notifications', 'show notifications', 'alerts'] },
+      { action: 'filter_jobs', route: '/jobs', keywords: ['remote jobs', 'work from home'], filters: { job_type: 'REMOTE' } },
+      { action: 'filter_jobs', route: '/jobs', keywords: ['full time'], filters: { job_type: 'FULL_TIME' } },
+      { action: 'filter_jobs', route: '/jobs', keywords: ['part time'], filters: { job_type: 'PART_TIME' } },
+      { action: 'navigate', route: '/accessibility', keywords: ['accessibility', 'settings', 'preferences'] },
+      { action: 'navigate', route: '/resumes', keywords: ['upload resume', 'resume', 'cv'] },
+      { action: 'navigate', route: '/applications', keywords: ['my applications', 'applications', 'status'] },
+      { action: 'navigate', route: '/employer/jobs/new', keywords: ['post a job', 'create job', 'new job', 'hire'] },
+      { action: 'navigate', route: '/resources', keywords: ['resources', 'help', 'guides', 'guide'] },
+      { action: 'navigate', route: '/interviews', keywords: ['interviews', 'interview room', 'my interviews', 'interview'] },
+      { action: 'navigate', route: '/login', keywords: ['login', 'log in', 'sign in'] },
+      { action: 'navigate', route: '/signup', keywords: ['signup', 'sign up', 'register', 'create account'] },
+      { action: 'navigate', route: '/', keywords: ['landing page', 'main page'] },
+      { action: 'navigate', route: '/dashboard', keywords: ['dashboard', 'home', 'my profile', 'profile'] },
+      { action: 'read_aloud', route: null, keywords: ['read aloud', 'read the page', 'read page', 'read this', 'read content', 'read screen', 'read everything'] },
+      { action: 'navigate_back', route: null, keywords: ['go back', 'back', 'previous page'] },
+      { action: 'deactivate', route: null, keywords: ['stop', 'goodbye', 'deactivate', 'exit voice', 'quiet'] },
+      { action: 'search_jobs', route: '/jobs', keywords: ['search', 'find'] }, 
+      { action: 'navigate', route: '/jobs', keywords: ['jobs', 'openings', 'browse jobs', 'browse'] } 
+    ]
+
+    for (const intent of intents) {
+      if (intent.keywords.some(kw => t.includes(kw))) {
+        if (intent.action === 'search_jobs') {
+            const q = t.replace(/\b(search|find|show me|look for|jobs|job|for)\b/g, '').trim()
+            return { action: 'search_jobs', query: q }
+        }
+        return intent
+      }
+    }
+    return { action: 'unknown' }
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
   // COMMAND PROCESSOR
   // ─────────────────────────────────────────────────────────────────────────
   const processCommand = useCallback(async (rawText) => {
@@ -107,36 +152,54 @@ export function VoiceNavigationButton() {
     const text = rawText.toLowerCase().trim()
     setStatus(`Processing: "${rawText}"`)
 
-    // ── Local fast-path commands (no API needed) ──────────────────────────
+    // 1. FAST PATH — Local Intent Matching
+    const intent = matchIntent(text)
+    
+    // Debug output for developer
+    console.log(`[VoiceNav] Transcript: "${text}" -> Matched Intent: "${intent.action}"`)
 
-    // Stop / deactivate
-    if (/\b(stop|goodbye|deactivate|exit voice|quiet)\b/.test(text)) {
-      setVoiceAssistantActive(false)
-      speak('Voice assistant deactivated. Say hello bandhu to reactivate.', true)
-      setStatus('Deactivated', 3000)
+    if (intent.action !== 'unknown') {
+      addHistory(rawText, intent.action, intent.route || null)
+      
+      if (intent.action === 'deactivate') {
+        setVoiceAssistantActive(false)
+        speak('Voice assistant deactivated. Say hello bandhu to reactivate.', true)
+        setStatus('Deactivated', 3000)
+      } else if (intent.action === 'read_aloud') {
+        readPageAloud()
+      } else if (intent.action === 'navigate_back') {
+        navigate(-1)
+        speak('Going back.', true)
+        setStatus('← Going back')
+      } else if (intent.action === 'logout') {
+        logout()
+        navigate('/login')
+        speak('Logging out.', true)
+        setStatus('Logged out')
+      } else if (intent.action === 'apply_job') {
+        setTimeout(() => window.dispatchEvent(new CustomEvent('voice:apply_job')), 300)
+        speak('Applying to this job.', true)
+        setStatus('Applying...')
+      } else if (intent.action === 'filter_jobs') {
+        navigate('/jobs')
+        setTimeout(() => window.dispatchEvent(new CustomEvent('voice:filter_jobs', { detail: intent.filters })), 400)
+        speak('Applying job filters.', true)
+      } else if (intent.action === 'search_jobs') {
+        navigate(`/jobs?search=${encodeURIComponent(intent.query || '')}`)
+        setTimeout(() => window.dispatchEvent(new CustomEvent('voice:search_jobs', { detail: { query: intent.query } })), 400)
+        speak(`Searching for ${intent.query}`, true)
+      } else if (intent.action === 'navigate') {
+        navigate(intent.route)
+        speak(`Navigating to ${intent.route.split('/').pop()}`, true)
+        setStatus(`→ ${intent.route}`)
+      }
+      
       setIsProcessing(false)
+      setTimeout(() => setTranscript(''), 4000)
       return
     }
 
-    // Read aloud
-    if (/\b(read aloud|read the page|read page|read this|read content|read screen|read everything)\b/.test(text)) {
-      readPageAloud()
-      setIsProcessing(false)
-      addHistory(rawText, 'read_aloud', null)
-      return
-    }
-
-    // Go back
-    if (/\b(go back|back|previous page)\b/.test(text)) {
-      navigate(-1)
-      speak('Going back.', true)
-      setStatus('← Going back')
-      setIsProcessing(false)
-      addHistory(rawText, 'navigate_back', null)
-      return
-    }
-
-    // ── Try backend API for smart NLP resolution ──────────────────────────
+    // 2. SLOW PATH — Try backend API for smart NLP resolution
     try {
       const payload = { command: `hello bandhu ${text}` }
       const { data } = await api.post('/api/accessibility/voice-command/', payload)
@@ -147,93 +210,20 @@ export function VoiceNavigationButton() {
         navigate(data.route)
         speak(data.message || `Navigating to ${data.route}`, true)
         setStatus(data.message || `→ ${data.route}`)
-
-      } else if (data.action === 'filter_jobs') {
-        // Navigate to jobs and emit a custom event so BrowseJobs applies filters
-        navigate('/jobs')
-        setTimeout(() => {
-          window.dispatchEvent(new CustomEvent('voice:filter_jobs', { detail: data.filters }))
-        }, 400)
-        speak(data.message || 'Applying job filters.', true)
-        setStatus(data.message)
-
-      } else if (data.action === 'search_jobs') {
-        navigate(`/jobs?search=${encodeURIComponent(data.query || '')}`)
-        window.dispatchEvent(new CustomEvent('voice:search_jobs', { detail: { query: data.query } }))
-        speak(data.message || `Searching for ${data.query}`, true)
-        setStatus(data.message)
-
-      } else if (data.action === 'apply_job') {
-        // Navigate to job detail or jobs list and trigger apply
-        navigate(`/jobs?search=${encodeURIComponent(data.job_title || '')}`)
-        setTimeout(() => {
-          window.dispatchEvent(new CustomEvent('voice:apply_job', { detail: { job_title: data.job_title } }))
-        }, 600)
-        speak(data.message || `Looking for ${data.job_title} jobs to apply.`, true)
-        setStatus(data.message)
-
-      } else if (data.action === 'navigate_back') {
-        navigate(-1)
-        speak(data.message || 'Going back.', true)
-
-      } else if (data.action === 'read_aloud') {
-        readPageAloud()
-
-      } else if (data.action === 'deactivate') {
-        setVoiceAssistantActive(false)
-        speak(data.message, true)
-        setStatus('Voice deactivated', 3000)
-
       } else {
         speak(data.message || "I didn't understand that. Try saying search jobs or go to dashboard.", true)
         setStatus("Command not understood. Try again.")
       }
 
     } catch (err) {
-      console.warn('Voice API error, using fallback:', err)
-      // ── Robust client-side fallback ────────────────────────────────────
-      const fallback = clientFallback(text)
-      if (fallback.action === 'navigate') {
-        navigate(fallback.route)
-        speak(`Going to ${fallback.route}`, true)
-      } else if (fallback.action === 'filter_jobs') {
-        navigate('/jobs')
-        setTimeout(() => {
-          window.dispatchEvent(new CustomEvent('voice:filter_jobs', { detail: fallback.filters }))
-        }, 400)
-        speak(fallback.message, true)
-      } else if (fallback.action === 'search_jobs') {
-        navigate(`/jobs?search=${encodeURIComponent(fallback.query)}`)
-        speak(`Searching for ${fallback.query}`, true)
-      } else {
-        speak("Sorry, command not recognised. Try saying read aloud or go to jobs.", true)
-      }
-      addHistory(rawText, fallback.action, null)
+      console.warn('Voice API error:', err)
+      speak("Sorry, command not recognised. Try saying read aloud or go to jobs.", true)
+      addHistory(rawText, 'unknown', null)
     } finally {
       setIsProcessing(false)
       setTimeout(() => setTranscript(''), 4000)
     }
-  }, [navigate, readPageAloud, speak, setStatus, setVoiceAssistantActive])
-
-  // ── Client-side fallback NLP ──
-  function clientFallback(text) {
-    if (/\b(job|jobs|search|browse)\b/.test(text)) {
-      if (/\b(remote|work from home)\b/.test(text))
-        return { action: 'filter_jobs', filters: { job_type: 'REMOTE' }, message: 'Showing remote jobs.' }
-      if (/\b(full.?time)\b/.test(text))
-        return { action: 'filter_jobs', filters: { job_type: 'FULL_TIME' }, message: 'Showing full-time jobs.' }
-      if (/\b(part.?time)\b/.test(text))
-        return { action: 'filter_jobs', filters: { job_type: 'PART_TIME' }, message: 'Showing part-time jobs.' }
-      const q = text.replace(/\b(search|find|show|browse|jobs?|for|me)\b/g, '').trim()
-      if (q) return { action: 'search_jobs', query: q }
-      return { action: 'navigate', route: '/jobs' }
-    }
-    if (/\b(dashboard|home)\b/.test(text))   return { action: 'navigate', route: '/dashboard' }
-    if (/\b(resume|profile)\b/.test(text))   return { action: 'navigate', route: '/resumes' }
-    if (/\b(resource|help)\b/.test(text))    return { action: 'navigate', route: '/resources' }
-    if (/\b(application)\b/.test(text))      return { action: 'navigate', route: '/applications' }
-    return { action: 'unknown' }
-  }
+  }, [navigate, readPageAloud, speak, setStatus, setVoiceAssistantActive, logout])
 
   function addHistory(cmd, action, route) {
     setHistory(prev => [{ id: Date.now(), cmd, action, route }, ...prev].slice(0, 8))
@@ -308,11 +298,13 @@ export function VoiceNavigationButton() {
     rec.onend = () => {
       isListeningRef.current = false
       setIsListening(false)
-      // Auto-restart while voice nav is enabled
+      // Auto-restart while voice nav is enabled. 
+      // The browser's aggressive silence-timeouts trigger onend frequently when continuous=true.
+      // We explicitly restart it here to ensure it keeps listening robustly.
       if (settingsRef.current?.voiceNavigation) {
         setTimeout(() => {
           if (!isListeningRef.current && settingsRef.current?.voiceNavigation) startListening()
-        }, 500)
+        }, 100) // Lowered from 500ms for faster reconnect
       }
     }
 

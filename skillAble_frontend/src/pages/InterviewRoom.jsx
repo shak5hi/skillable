@@ -3,7 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Video, Mic, MicOff, VideoOff, PhoneOff, MessageSquare,
-  HandMetal, User, Volume2, VolumeX, Captions, CaptionsOff
+  HandMetal, User, Volume2, VolumeX, Captions, CaptionsOff, Settings
 } from 'lucide-react'
 import { useAuthStore } from '../store/authStore'
 
@@ -18,39 +18,39 @@ export default function InterviewRoom() {
   const navigate = useNavigate()
   const { user, accessToken } = useAuthStore()
 
-  const isDeaf   = user?.disabilityType === 'DEAF'
-  const isBlind  = user?.disabilityType === 'BLIND'
+  const isDeaf = user?.disabilityType === 'DEAF'
+  const isBlind = user?.disabilityType === 'BLIND'
   const isEmployer = user?.role === 'EMPLOYER'
 
   // ── Refs ──
-  const videoRef      = useRef(null)
-  const remoteVideoRef= useRef(null)
-  const canvasRef     = useRef(null)
-  const wsRef         = useRef(null)
-  const handsRef      = useRef(null)
+  const videoRef = useRef(null)
+  const remoteVideoRef = useRef(null)
+  const canvasRef = useRef(null)
+  const wsRef = useRef(null)
+  const handsRef = useRef(null)
   const sendIntervalRef = useRef(null)
   const latestLandmarksRef = useRef([])
   const employerRecognitionRef = useRef(null)
   const messagesEndRef = useRef(null)
 
   // ── Media state ──
-  const [stream, setStream]           = useState(null)
-  const [isVideoOn, setIsVideoOn]     = useState(true)
-  const [isMuted, setIsMuted]         = useState(false)
+  const [stream, setStream] = useState(null)
+  const [isVideoOn, setIsVideoOn] = useState(true)
+  const [isMuted, setIsMuted] = useState(false)
   const [cameraError, setCameraError] = useState(null)
 
   // ── WebSocket ──
   const [isConnected, setIsConnected] = useState(false)
 
   // ── Sign Language ──
-  const [isSignActive, setIsSignActive]       = useState(false)
-  const [mediapipeReady, setMediapipeReady]   = useState(false)
+  const [isSignActive, setIsSignActive] = useState(false)
+  const [mediapipeReady, setMediapipeReady] = useState(false)
   const [currentSignResult, setCurrentSignResult] = useState(null)
 
   // ── Speech → Text (interviewer speaking → deaf candidate reads) ──
-  const [captionsEnabled, setCaptionsEnabled]       = useState(isDeaf)   // auto-on for deaf
-  const [currentCaption, setCurrentCaption]         = useState('')
-  const [captionHistory, setCaptionHistory]         = useState([])
+  const [captionsEnabled, setCaptionsEnabled] = useState(isDeaf)   // auto-on for deaf
+  const [currentCaption, setCurrentCaption] = useState('')
+  const [captionHistory, setCaptionHistory] = useState([])
 
   // ── TTS toggle (blind users) ──
   const [ttsEnabled, setTtsEnabled] = useState(isBlind)
@@ -59,17 +59,56 @@ export default function InterviewRoom() {
   const [participants, setParticipants] = useState([
     { id: user?.id, name: user?.fullName || 'You', isMe: true, role: user?.role }
   ])
-  const [messages, setMessages]       = useState([])
+  const [messages, setMessages] = useState([])
   const [messageInput, setMessageInput] = useState('')
 
+  // ── TTS Settings (Voices) ──
+  const [voices, setVoices] = useState([])
+  const [selectedVoiceURI, setSelectedVoiceURI] = useState('')
+  const [speechRate, setSpeechRate] = useState(1.0)
+  const lastSignSpokenRef = useRef({ text: '', time: 0 })
+
+  useEffect(() => {
+    if (!window.speechSynthesis) return
+    const populateVoices = () => {
+      const v = window.speechSynthesis.getVoices()
+      if (v.length > 0) {
+        setVoices(v)
+        // Default to Google US English if available, else standard default
+        if (!selectedVoiceURI) {
+          const defaultVoice = v.find(x => x.name.includes('Google US English')) || v.find(x => x.default) || v.find(x => x.lang.startsWith('en')) || v[0]
+          if (defaultVoice) setSelectedVoiceURI(defaultVoice.voiceURI)
+        }
+      }
+    }
+    populateVoices()
+    window.speechSynthesis.onvoiceschanged = populateVoices
+  }, [selectedVoiceURI])
+
   // ── Helper: speak via TTS ──
-  const speak = useCallback((text) => {
+  const speak = useCallback((text, options = {}) => {
     if (!text || !window.speechSynthesis) return
-    window.speechSynthesis.cancel()
+
+    // Debounce rapid identical sign words to prevent spam
+    if (options.isSignEvent) {
+      const now = Date.now()
+      if (lastSignSpokenRef.current.text === text && (now - lastSignSpokenRef.current.time) < 2000) {
+        return // skip this utterance
+      }
+      lastSignSpokenRef.current = { text, time: now }
+    } else {
+      // Violent interrupt for system events (not sign language)
+      window.speechSynthesis.cancel()
+    }
+
     const utt = new SpeechSynthesisUtterance(text)
-    utt.rate = 0.95
+    utt.rate = speechRate
+    if (selectedVoiceURI) {
+      const v = window.speechSynthesis.getVoices().find(x => x.voiceURI === selectedVoiceURI)
+      if (v) utt.voice = v
+    }
     window.speechSynthesis.speak(utt)
-  }, [])
+  }, [speechRate, selectedVoiceURI])
 
   // ── Load MediaPipe Hands script on demand ──
   const loadMediaPipe = useCallback(() => {
@@ -207,9 +246,9 @@ export default function InterviewRoom() {
           senderName: data.sender_name, text: txt, confidence: pct
         }])
 
-        // If the signing user is the DEAF CANDIDATE → voice it to the interviewer
-        if (data.sender_id !== user?.id && txt) {
-          speak(`${data.sender_name} signed: ${txt}`)
+        // Voice the translation aloud for everyone, using queueing (isSignEvent: true)
+        if (txt) {
+          speak(txt, { isSignEvent: true })
         }
         // If WE are blind, also speak it
         if (isBlind && data.sender_id !== user?.id && txt) {
@@ -395,11 +434,11 @@ export default function InterviewRoom() {
     rec.onend = () => {
       // Restart automatically
       if (captionsEnabled && isEmployer) {
-        try { rec.start() } catch (_) {}
+        try { rec.start() } catch (_) { }
       }
     }
 
-    try { rec.start() } catch (_) {}
+    try { rec.start() } catch (_) { }
     employerRecognitionRef.current = rec
 
     return () => { rec.stop() }
@@ -432,15 +471,15 @@ export default function InterviewRoom() {
     }
     if (type === 'video') {
       const track = stream.getVideoTracks()[0]
-      if (track) { 
+      if (track) {
         track.enabled = !isVideoOn
-        setIsVideoOn(!isVideoOn) 
+        setIsVideoOn(!isVideoOn)
       }
     } else {
       const track = stream.getAudioTracks()[0]
-      if (track) { 
+      if (track) {
         track.enabled = isMuted
-        setIsMuted(!isMuted) 
+        setIsMuted(!isMuted)
       }
     }
   }
@@ -517,7 +556,7 @@ export default function InterviewRoom() {
 
         {/* ── CENTER: Video & Controls ── */}
         <main className="flex-1 flex flex-col relative bg-[#F8FAFC] p-4 lg:p-6" aria-label="Video area">
-          
+
           <div className="flex-1 relative w-full h-full max-w-5xl mx-auto rounded-3xl overflow-hidden bg-[#111827] shadow-[0_20px_60px_rgba(0,0,0,0.12)] border-4 border-white flex items-center justify-center group">
 
             {/* Own video feed */}
@@ -612,7 +651,7 @@ export default function InterviewRoom() {
 
           {/* ── Floating Control Bar (Modern Zoom/Meet style) ── */}
           <div className="absolute bottom-10 left-0 right-0 mx-auto w-max bg-white/90 backdrop-blur-lg border border-gray-200 shadow-[0_20px_40px_rgba(0,0,0,0.08)] rounded-full px-3 py-3 flex items-center gap-2 z-40">
-            
+
             {/* Mute */}
             <button
               onClick={() => handleToggle('audio')}
@@ -636,11 +675,10 @@ export default function InterviewRoom() {
             {/* Sign Language toggle */}
             <button
               onClick={() => setIsSignActive(v => !v)}
-              className={`px-5 h-12 rounded-full flex items-center justify-center gap-2 transition-all font-bold text-[11px] uppercase tracking-widest border ${
-                isSignActive
+              className={`px-5 h-12 rounded-full flex items-center justify-center gap-2 transition-all font-bold text-[11px] uppercase tracking-widest border ${isSignActive
                   ? 'bg-[#111827] border-[#111827] text-white shadow-md'
                   : 'bg-white border-gray-200 text-gray-500 hover:border-gray-300 hover:text-[#111827]'
-              }`}
+                }`}
             >
               <HandMetal className={`w-4 h-4 ${isSignActive ? 'text-[#4F7DFF]' : ''}`} />
               <span className="hidden sm:inline">{isSignActive ? 'Signing ON' : 'Sign Language'}</span>
@@ -650,11 +688,10 @@ export default function InterviewRoom() {
             {/* Captions toggle */}
             <button
               onClick={() => setCaptionsEnabled(v => !v)}
-              className={`px-5 h-12 rounded-full flex items-center justify-center gap-2 transition-all font-bold text-[11px] uppercase tracking-widest border ${
-                captionsEnabled
+              className={`px-5 h-12 rounded-full flex items-center justify-center gap-2 transition-all font-bold text-[11px] uppercase tracking-widest border ${captionsEnabled
                   ? 'bg-[#111827] border-[#111827] text-white shadow-md'
                   : 'bg-white border-gray-200 text-gray-500 hover:border-gray-300 hover:text-[#111827]'
-              }`}
+                }`}
             >
               {captionsEnabled ? <Captions className="w-4 h-4 text-[#4F7DFF]" /> : <CaptionsOff className="w-4 h-4" />}
               <span className="hidden sm:inline">{captionsEnabled ? 'Captions ON' : 'Captions'}</span>
@@ -663,15 +700,37 @@ export default function InterviewRoom() {
             {/* TTS toggle */}
             <button
               onClick={() => setTtsEnabled(v => !v)}
-              className={`px-5 h-12 rounded-full flex items-center justify-center gap-2 transition-all font-bold text-[11px] uppercase tracking-widest border ${
-                ttsEnabled
+              className={`px-5 h-12 rounded-full flex items-center justify-center gap-2 transition-all font-bold text-[11px] uppercase tracking-widest border ${ttsEnabled
                   ? 'bg-[#111827] border-[#111827] text-white shadow-md'
                   : 'bg-white border-gray-200 text-gray-500 hover:border-gray-300 hover:text-[#111827]'
-              }`}
+                }`}
             >
               {ttsEnabled ? <Volume2 className="w-4 h-4 text-[#4F7DFF]" /> : <VolumeX className="w-4 h-4" />}
               <span className="hidden lg:inline">{ttsEnabled ? 'TTS ON' : 'Read Aloud'}</span>
             </button>
+            {/* TTS Settings Dropdown */}
+            {window.speechSynthesis && voices.length > 0 && (
+              <div className="relative group">
+                <button className="px-3 h-12 rounded-full border border-gray-200 bg-white text-gray-500 hover:border-gray-300 hover:text-[#111827] flex items-center justify-center transition-all shadow-sm">
+                   <Settings className="w-4 h-4" />
+                </button>
+                <div className="absolute bottom-full mb-3 left-1/2 -translate-x-1/2 w-48 bg-white border border-gray-100 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.1)] p-4 hidden group-hover:block transition-all opacity-0 group-hover:opacity-100 z-50">
+                  <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">TTS Voice</p>
+                  <select 
+                    value={selectedVoiceURI} 
+                    onChange={e => setSelectedVoiceURI(e.target.value)}
+                    className="w-full text-xs p-2 border border-gray-200 rounded-xl mb-3 text-[#111827] bg-[#FAFAF8] outline-none focus:border-[#4F7DFF] focus:ring-2 focus:ring-[#4F7DFF]/10 transition-all"
+                  >
+                    {voices.map(v => <option key={v.voiceURI} value={v.voiceURI}>{v.name.replace(/Google |Microsoft /g, '')}</option>)}
+                  </select>
+                  <div className="flex justify-between items-center mb-1">
+                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Speed</p>
+                    <p className="text-[10px] font-bold text-[#111827]">{speechRate}x</p>
+                  </div>
+                  <input type="range" min="0.5" max="1.5" step="0.1" value={speechRate} onChange={e => setSpeechRate(parseFloat(e.target.value))} className="w-full accent-[#4F7DFF]" />
+                </div>
+              </div>
+            )}
           </div>
 
         </main>
