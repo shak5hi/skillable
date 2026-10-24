@@ -199,9 +199,9 @@ SkillAble/
 ## 1. Clone Repository
 
 ```bash
-git clone https://github.com/your-username/SkillAble.git
+git clone https://github.com/shak5hi/skillable.git
 
-cd SkillAble
+cd skillable
 ```
 
 ---
